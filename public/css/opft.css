@@ -1,0 +1,28 @@
+
+.transfer
+{
+  color:blue;
+}
+.transfer a
+{
+  color:inherit;
+}
+
+.payment
+{
+  color:black;
+}
+.payment a
+{
+  color:inherit;
+}
+
+
+.income
+{
+  color:green;
+}
+.expense
+{
+  color:firebrick;
+}

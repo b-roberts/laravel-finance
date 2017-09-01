@@ -2,7 +2,8 @@
 @section('content')
   <div class="container">
         {!! $charts['cashflow']->html() !!}
-        {!! $charts['cashflow2']->html() !!}
+        {!! $charts['netIncome']->html() !!}
+        {!! $charts['netWorth']->html() !!}
 </div>
 @endsection
 @push('scripts')

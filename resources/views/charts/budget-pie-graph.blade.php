@@ -1,15 +1,27 @@
-@php $chartID = 'chart-' . mt_rand(); @endphp
-	<script>
-	$(function(){
-google.charts.setOnLoadCallback(function() {
-  budgetData = google.visualization.arrayToDataTable({!!$dataTable!!});
-    var options = {
-      title: 'My Daily Activities'
-    };
+@php
+$chart = \Charts::create('pie', 'google')
+	->title('Category Breakdown')
+	->elementLabel("Category")
 
-    var budgetChart = new google.visualization.PieChart(document.getElementById('{{$chartID}}'));
-    budgetChart.draw(budgetData, options);
-})})
-</script>
-
-<div id="{{$chartID}}" style="width: 1000px; height: 1000px;"></div>
+	->responsive(false)
+	->colors($categories->pluck('color')->values())
+	->values($categories->map(function ($c) {
+		if(isset($c->pivot))
+		{
+			return $c->pivot->value >  0 ? $c->pivot->value : 0;
+		}
+		elseif(isset($c->actual))
+		{
+			return $c->actual >  0 ? $c->actual : 0;
+		}
+		else {
+			return 0;
+		}
+	}))
+	->labels($categories->pluck('name')->values())
+;
+@endphp
+{!!$chart->html()!!}
+@push('scripts')
+	{!!$chart->script() !!}
+@endpush

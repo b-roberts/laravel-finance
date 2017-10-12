@@ -17,6 +17,7 @@ Route::get('/', function () {
 Route::resource('transaction', 'TransactionController');
 Route::resource('budget', 'BudgetController');
 Route::resource('account', 'AccountController');
+Route::resource('category', 'CategoryController');
 
 Route::get('transactions/{startDate?}', 'AccountingPeriodController@index')->name('period');
 Route::get('cashflow', 'CashflowController@cashflow')->name('cashflow');

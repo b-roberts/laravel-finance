@@ -51,18 +51,18 @@ class CategorySpending extends \ConsoleTVs\Charts\Builder\Multi
         });
 
         $transactionsByMonth = $transactions->groupBy(function ($item, $key) {
-            return date('m-y', strtotime($item->file_date));
+            return date('Y-m-01', strtotime($item->file_date));
         });
 
         $fillerDate = new Carbon($since);
         $now = new Carbon($until);
         while ($fillerDate < $now) {
-            $transactionsByMonth = $transactionsByMonth->union(([$fillerDate->format('m-y') => null]));
+            $transactionsByMonth = $transactionsByMonth->union(([$fillerDate->format('Y-m-01') => null]));
             $fillerDate->addMonth();
         }
 
         $transactionsByMonth = $transactionsByMonth->sortBy(function ($item, $key) {
-            return $key;
+            return strtotime($key);
         });
 
         $expenses = $transactionsByMonth->map(function ($chunk) {

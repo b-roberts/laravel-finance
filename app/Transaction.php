@@ -12,6 +12,7 @@ class Transaction extends Model
      * @var string
      */
     protected $table = 'transactions';
+    public $timestamps = false;
 
     public function account()
     {

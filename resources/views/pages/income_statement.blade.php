@@ -6,7 +6,21 @@
     font-style:italic;
     font-size:1.1em;
     }
+    .grandTotalLine { border-top:double 3px #000; font-size:1.2em;}
+    .subTotalLine { border-top:solid 1px #000;
+
+      font-style:italic;
+      font-size:1.1em;
+      }
+        table tr.subTotalLine td:first-child { padding-left: 2em;}
+
     table tr td:first-child { padding-left: 4em;}
+    table { font-size:inherit;}
+    .income,.expense { text-align:right;}
+    @media print {
+      body { font-size:9px!important;}
+      * { line-height: 12px; padding-top:0!important;padding-bottom:0!important;}
+    }
   </style>
   <div class="container">
 @include('modules.date_pager',['startDate'=>$startDate])
@@ -16,16 +30,23 @@
     <th colspan="3">Income</th>
   </tr>
   @foreach($transactions->where('value','<',0)->groupBy('account_id') as $transaction)
-    <tr>
+    @foreach($transaction as $trans)
+      <tr class="hdden-print">
+        <td>{{$trans->location }}</td>
+        <td></td>
+        <td class="income">{{sprintf('%01.2f',$trans->value*-1)}}</td>
+      </tr>
+    @endforeach
+    <tr class="subTotalLine">
       <td>{{$transaction->first()->account ? $transaction->first()->account->name : 'Other'}}</td>
       <td></td>
-      <td class="income">{{$transaction->sum('value')*-1}}</td>
+      <td class="income">{{sprintf('%01.2f',$transaction->sum('value')*-1)}}</td>
     </tr>
   @endforeach
   <tr class="totalLine">
+    <td>Total Income</td>
     <td></td>
-    <td></td>
-    <td class="income">{{$incomeTransactions->where('type','payment')->sum('value')*-1}}</td>
+    <td class="income"><strong>{{sprintf('%01.2f',$incomeTransactions->where('type','payment')->sum('value')*-1)}}</strong></td>
   </tr>
 
 
@@ -36,32 +57,44 @@
     <th colspan="3">{{$designation->name}}</th>
   </tr>
   @foreach($categories->sortByDesc('actual') as $category)
-    <tr {{($categories->count()==1) ? 'class="totalLine"' : ''}}>
+    <tr class="hidden-parint">
       <td>{{$category->name}}</td>
-      <td>{!!  isset($charts[$category->id]) ?$charts[$category->id]->html() :''!!}</td>
-      <td class="expense">({{$category->actual}})</td>
+      <td><div class="hidden-print">{!!  isset($charts[$category->id]) ?$charts[$category->id]->html() :''!!}</div></td>
+      <td class="expense">({{sprintf('%01.2f',$category->actual)}})</td>
     </tr>
   @endforeach
-    @if ($categories->count()>1)
-  <tr class="totalLine">
+
+  <tr class="totalLine hiddn-print">
     <td></td>
     <td></td>
-    <td class="income">({{$categories->sum('actual')}})</td>
+    <td class="income">({{sprintf('%01.2f',$categories->sum('actual'))}})</td>
   </tr>
-@endif
+
 @endif
   @endforeach
 
+      <tr>
+      <td>UnAllocated</td>
+      <td></td>
+      <td class="expense">({{sprintf('%01.2f',$unallocatedTransactions->sum('value'))}})</td>
+    </tr>
 
-  <tr class="totalLine">
+<tr class="totalLine">
+  <td>Total Expense</td>
+  <td></td>
+  <td class="income"><strong>({{sprintf('%01.2f',$transactions->where('value','>',0)->sum('value'))}})</strong></td>
+</tr>
+  <tr class="grandTotalLine">
+    <td>Grand Total</td>
     <td></td>
-    <td></td>
-    <td class="income"><strong>{{$transactions->sum('value')*-1}}</strong></td>
+    <td class="income"><strong>{{sprintf('%01.2f',$transactions->sum('value')*-1)}}</strong></td>
   </tr>
 </table>
 
 </div>
+<div class="hidden-print">
 @include('modules.date_pager',['startDate'=>$startDate])
+</div>
 @endsection
 @push('scripts')
   @foreach($charts as $chart)

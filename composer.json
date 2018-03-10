@@ -9,7 +9,8 @@
         "consoletvs/charts": "5.*",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
-        "laravelcollective/html": "^5.4.0"
+        "laravelcollective/html": "^5.4.0",
+        "php-ai/php-ml": "^0.4.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

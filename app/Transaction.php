@@ -12,6 +12,7 @@ class Transaction extends Model
      * @var string
      */
     protected $table = 'transactions';
+    public $timestamps = false;
 
     public function account()
     {
@@ -37,5 +38,14 @@ class Transaction extends Model
         }
 
         return json_encode($return, JSON_NUMERIC_CHECK);
+    }
+    public function getAllocationTypeAttribute()
+    {
+      switch($this->attributes['allocation_type'])
+      {
+        case '0':return 'manual';
+        case '1':return 'regex';
+        case '2':return 'Learned';
+      }
     }
 }

@@ -9,7 +9,7 @@ class CashflowController extends Controller
     public function cashflow()
     {
         //Load all transactions and group them by month
-        $transactions = \App\Transaction::orderBy('date')->orderBy('value')->get();
+        $transactions = \App\Transaction::orderBy('date')->orderBy('value')->where('type','payment')->get();
 
         $chartCashFlow = new \App\Charts\Cashflow($transactions);
         $chartNetIncome = new \App\Charts\NetIncome($transactions);

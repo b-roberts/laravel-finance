@@ -14,6 +14,12 @@
       <li class="nav-item">
         <a class="nav-link" href="{{route('cashflow')}}">Cashflow</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{route('income-statement')}}">Income Statement</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{route('settings')}}">Settings</a>
+      </li>
     </ul>
   </div>
 </nav>

@@ -22,7 +22,7 @@ class AccountingPeriodController extends Controller
         $categories = \App\Category::with(['transactions' => function ($query) use ($startDate,$endDate) {
             $query->where('date', '>', $startDate->toDateString())->where('date', '<', $endDate->toDateString());
         }, 'budgets' => function ($query) {
-            $query->where('id', 3);
+            $query->where('id', 4);
         }])->get();
 
         $transactionsByDay = $transactions->groupBy(function ($item, $key) {

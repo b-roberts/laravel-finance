@@ -5,11 +5,15 @@
 <tbody>
 @foreach($transactions as $transaction)
 
-<tr data-id="{{$transaction->id}}"><td>{{$transaction->date}}</td>
+<tr data-id="{{$transaction->id}}" class="{{$transaction->allocation_type}}"><td>{{$transaction->date}}</td>
   <td class="{{$transaction->type}}">
-    <a href="{{route('transaction.show',$transaction->id)}}">
+    <a href="{{route('transaction.show',$transaction->id)}}"
+      onclick="$('#myiframe').attr('src',$(this).attr('href'));
+
+      window.open($(this).attr('href'),'window','toolbar=no, menubar=no, resizable=no, height=500, width=700')
+      " target="myiframe" data-toggle="modal" data-target="#myModal">
     <strong>{{$transaction->location}}</strong><br />
-{{$transaction->id}}
+{{$transaction->id}} {{$transaction->allocation_type}}
 </a>
   </td>
 

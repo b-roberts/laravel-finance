@@ -19,8 +19,8 @@ class IncomeStatementController extends Controller
         //Load all transactions in the period
         $transactions = \App\Transaction::with('categories')->
         with('account')->
-        where('date', '>', $startDate->toDateString())->
-        where('date', '<', $endDate->toDateString())->
+        where('date', '>=', $startDate->toDateString())->
+        where('date', '<=', $endDate->toDateString())->
         where('type', 'payment')->
         orderBy('date')->
         orderBy('value')->
@@ -39,7 +39,10 @@ class IncomeStatementController extends Controller
             }])->get();
 
             $designation->categories->map(function ($y) {
-                $y->actual = $y->transactions->sum('pivot.value');
+                    $expenseTransactions = $y->transactions->filter(function ($item, $key) {
+            return $item->value > 0;
+        });
+                $y->actual = $expenseTransactions->sum('pivot.value');
             });
 
             $chartSince = (new  Carbon($startDate))->subMonths(6);
@@ -52,9 +55,21 @@ class IncomeStatementController extends Controller
             }
         }
 
+        $unallocatedTransactions = \App\Transaction::with('categories')->
+        with('account')->
+        where('date', '>', $startDate->toDateString())->
+        where('date', '<', $endDate->toDateString())->
+        where('type', 'payment')->
+        where('value','>',0)->
+        orderBy('date')->
+        orderBy('value')->
+        doesntHave('categories')->
+        get();
+
         return view('pages.income_statement', [
           'transactions' => $transactions,
           'incomeTransactions' => $incomeTransactions,
+          'unallocatedTransactions'=>$unallocatedTransactions,
           'designations' => $designations,
           'startDate' => $startDate,
           'charts' => $categoryCharts,

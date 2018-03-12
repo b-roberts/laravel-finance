@@ -55,7 +55,7 @@ class Cashflow extends \ConsoleTVs\Charts\Builder\Multi
 
         $this
   ->title('Monthly Cashflow')
-  ->dimensions(1000, 250)
+  ->dimensions(1250, 750)
   ->responsive(false)
   ->dataset('Expense', $transactionsByMonth->map(function ($chunk) {
       return $chunk->where('value', '>', 0)->sum('value');

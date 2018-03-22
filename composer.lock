@@ -4,8 +4,64 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "055edafe34b26197cf296f9bd02f1714",
+    "content-hash": "b33a8c351371ead9593b77e241f33ffe",
     "packages": [
+        {
+            "name": "asgrim/ofxparser",
+            "version": "1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/asgrim/ofxparser.git",
+                "reference": "8ba143295be666ae2cac05674f7d526d8e0ebed7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/asgrim/ofxparser/zipball/8ba143295be666ae2cac05674f7d526d8e0ebed7",
+                "reference": "8ba143295be666ae2cac05674f7d526d8e0ebed7",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.6|~7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~5.5",
+                "squizlabs/php_codesniffer": "~2.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "OfxParser": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Guillaume Bailleul",
+                    "email": "contact@guillaume-bailleul.fr",
+                    "homepage": "http://www.guillaume-bailleul.fr"
+                },
+                {
+                    "name": "James Titcumb",
+                    "email": "hello@jamestitcumb.com",
+                    "homepage": "http://www.jamestitcumb.com/"
+                },
+                {
+                    "name": "Oliver Lowe",
+                    "email": "mrtriangle@gmail.com"
+                }
+            ],
+            "description": "Simple OFX file parser",
+            "keywords": [
+                "finance",
+                "ofx",
+                "open financial exchange",
+                "parser"
+            ],
+            "time": "2016-09-26T11:36:23+00:00"
+        },
         {
             "name": "consoletvs/charts",
             "version": "5.0.2",

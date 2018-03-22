@@ -1,5 +1,8 @@
 @extends('templates.bootstrap')
 @section('content')
+  <div>
+    <a href="{{route('import.index')}}" class="pull-right">Import from financial institution</a>
+  </div>
 @include('modules.transactions_table')
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">

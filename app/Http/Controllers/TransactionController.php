@@ -19,7 +19,7 @@ class TransactionController extends Controller
     }
     public function payee($payee)
     {
-        $transactions = \App\Transaction::where('date', '>', '2017-05-01')->where('location',$payee)->orderBy('date','desc')->orderBy('value')->get();
+        $transactions = \App\Transaction::where('date', '>', '2017-05-01')->where('payee_id',$payee)->orderBy('date','desc')->orderBy('value')->get();
 
         return view('pages.transactions.index', ['transactions' => $transactions]);
     }

@@ -27,7 +27,16 @@
 @endforeach
 </td>
 <td>
-<button onclick=" if (confirm('Are you sure you want to delete this transaction?'))
+
+
+  <!-- Default dropleft button -->
+  <div class="btn-group dropleft">
+    <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      ...
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" href="{{route('payee',$transaction->payee_id)}}">See All {{$transaction->location}}</a>
+<a class="dropdown-item" href="#" onclick=" if (confirm('Are you sure you want to delete this transaction?'))
   {
     $.ajax({ url:'{{route('transaction.destroy', $transaction->id)}}',
         type:'DELETE',
@@ -36,7 +45,18 @@
 $('[data-id=&quot;{{$transaction->id}}&quot;]').remove();
         }});
   }
-">Delete</button>
+">Delete</a>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
 
 
 

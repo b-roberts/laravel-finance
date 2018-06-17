@@ -1,5 +1,6 @@
 @extends('templates.bootstrap')
 @section('content')
+<a href="{{route('category.show',$category->id+1)}}">Next</a>
   <div class="container">
 
     <h1>{{$category->name}}</h1>

@@ -24,6 +24,6 @@ Route::get('transactions/{startDate?}', 'AccountingPeriodController@index')->nam
 Route::get('income-statement/{startDate?}', 'IncomeStatementController@index')->name('income-statement');
 Route::get('cashflow', 'CashflowController@cashflow')->name('cashflow');
 
-Route::get('payee/{payee}','TransactionController@payee');
+Route::get('payee/{payee}','TransactionController@payee')->name('payee');
 
 Route::get('settings',function(){return view('pages.settings');})->name('settings');

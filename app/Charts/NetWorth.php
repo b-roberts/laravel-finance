@@ -7,7 +7,7 @@ class NetWorth extends \ConsoleTVs\Charts\Builder\Multi
     private function movingAverage($values)
     {
         if (function_exists('trader_kama')) {
-            $averages = trader_kama($values, 60);
+            $averages = trader_kama($values, 7);
             //Fill in array with nulls to keep length the same
             $i = 0;
             while (!isset($averages[$i]) && $i < sizeof($averages)) {
@@ -38,30 +38,23 @@ class NetWorth extends \ConsoleTVs\Charts\Builder\Multi
         }
     }
 
-    public function __construct($transactions)
+    public function __construct()
     {
         parent::__construct('line', 'google');
-        $transactionsByMonth = $transactions->groupBy(function ($item, $key) {
-            return date('m/d/y', strtotime($item['date']));
-        });
+        $reportedBalances=\DB::table('account_balance')->where('value','>',0)->groupBy('date')->select(['date',\DB::raw('sum(value) value')])->get();
+        $netData = $reportedBalances->pluck('value')->all();
 
-        $netData = $transactionsByMonth->map(function ($chunk) {
-            static $runningTotal = 0;
-            $runningTotal += $chunk->sum('value') * -1;
-
-            return $runningTotal;
-        })->values()->all();
-
+dd(trader_tsf ($netData));
         $this
                       ->title('Net Worth')
 
                       ->dimensions(1000, 250)
                       ->responsive(false)
-                      ->dataset('Net Income', $netData)
-                      ->dataset('Average', $this->movingAverage($netData))
-
-                      ->colors(['#FBE1C8', '#CC444B'])
-                      ->labels($transactionsByMonth->keys())
+                    //  ->dataset('Net Income', $netData)
+                      ->dataset('Networth', $this->movingAverage($netData))
+                      ->dataset('tsf',trader_tsf ($netData))
+                    //  ->colors(['#CC444B'])
+                      ->labels($reportedBalances->pluck('date')->all())
                     ;
     }
 }

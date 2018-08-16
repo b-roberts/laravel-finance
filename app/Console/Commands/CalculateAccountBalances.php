@@ -38,11 +38,11 @@ class CalculateAccountBalances extends Command
     public function handle()
     {
         //
-        foreach([8] as $accountID)
+
+        foreach(\App\Account::all()->pluck('id') as $accountID)
         {
-dispatch(new \App\Jobs\CalculateAccountBalance($accountID));
-
-
+            $this->info('Calculating Account:' . $accountID);
+            dispatch(new \App\Jobs\CalculateAccountBalance($accountID));
       }
 
     }

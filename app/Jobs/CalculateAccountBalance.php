@@ -31,6 +31,10 @@ class CalculateAccountBalance
         \DB::table('account_balance')->where('account_id', $accountID)->where('calculated', 1)->delete();
 
         $reportedBalances=\DB::table('account_balance')->where('account_id', $accountID)->where('calculated', 0)->orderBy('date')->get();
+        if($reportedBalances->count()==0)
+        {
+            return;
+        }
         $balance = $reportedBalances->first()->value;
         $date = $reportedBalances->first()->date;
         $startBalance = $balance;
@@ -52,6 +56,17 @@ class CalculateAccountBalance
             }
         }
 
+
+
+        $date = new \Carbon\Carbon('2014-06-01');
+        while ($date < (new \Carbon\Carbon($reportedBalances->first()->date))) {
+            $record=\DB::table('account_balance')
+              ->where('account_id', $accountID)
+              ->where('date', $date)->first();
+                \DB::table('account_balance')->insert(['account_id'=>$accountID,'date'=>$date,'value'=>0,'calculated'=>1]);
+            $date->addDay();
+        }
+
         $today = new \Carbon\Carbon();
         $balance = $reportedBalances->first()->value;
         $date = new \Carbon\Carbon($reportedBalances->first()->date);
@@ -68,6 +83,6 @@ class CalculateAccountBalance
             $date->addDay();
         }
 
-        dispatch(new \App\Jobs\CalculateAccountBalance($accountID));
+
     }
 }

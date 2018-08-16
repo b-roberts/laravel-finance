@@ -12,7 +12,9 @@ class Kernel extends ConsoleKernel
      *
      * @var array
      */
-    protected $commands = [\App\Console\Commands\PredictExisting::class
+    protected $commands = [
+      \App\Console\Commands\PredictExisting::class,
+      \App\Console\Commands\CalculateAccountBalances::class
     ];
 
     /**

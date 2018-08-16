@@ -67,5 +67,7 @@ class CalculateAccountBalance
 
             $date->addDay();
         }
+
+        dispatch(new \App\Jobs\CalculateAccountBalance($accountID));
     }
 }

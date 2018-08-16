@@ -180,7 +180,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         App\Providers\FormServiceProvider::class,
         ConsoleTVs\Charts\ChartsServiceProvider::class,
-
+Barryvdh\Debugbar\ServiceProvider::class,
     ],
 
     /*

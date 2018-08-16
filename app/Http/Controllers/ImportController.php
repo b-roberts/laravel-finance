@@ -52,6 +52,14 @@ class ImportController extends Controller
                 $transaction->fitid = $ofxTransaction->uniqueId;
                 $transaction->date = $ofxTransaction->date->format('Y-m-d');
                 if ($transaction->save()) {
+                  dispatch(new \App\Jobs\RunRules($transaction));
+              /*    $prediction =  dispatch(new \App\Jobs\PredictAllocations($transaction));
+                  foreach($prediction as $category)
+                  {
+                    $transaction->categories()->attach([$category->id=>['value'=>$category->actual,'file_date'=>$transaction->date]]);
+                    $transaction->allocation_type=2;
+                    $transaction->save();
+                  }*/
                     ++$importCount;
                 }
             }

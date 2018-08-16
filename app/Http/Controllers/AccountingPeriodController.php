@@ -9,6 +9,7 @@ class AccountingPeriodController extends Controller
 {
     public function index($startDate, $endDate = null)
     {
+
         $startDate = new  Carbon($startDate);
         if (null == $endDate) {
             $endDate = (new  Carbon($startDate))->addMonth();
@@ -71,17 +72,7 @@ class AccountingPeriodController extends Controller
           ->labels($categories->pluck('name')->values())
         ;
 
-        $categoryBreakdown = Charts::create('pie', 'google')
-          ->title('Category Breakdown')
-          ->elementLabel('Category')
 
-          ->responsive(false)
-          ->colors($categories->pluck('color')->values())
-          ->values($categories->map(function ($c) {
-              return $c->actual > 0 ? $c->actual : 0;
-          }))
-          ->labels($categories->pluck('name')->values())
-        ;
 
         $spendPercentage = 100;
         $spendColor = '#00ff00';
@@ -97,7 +88,11 @@ class AccountingPeriodController extends Controller
            ->height(30)
            ->width(0);
 
-        $expectedExpensePercentage = $expenseTransactions->sum('value') / $categories->sum('expected') * 100;
+           $expectedExpensePercentage=0;
+           if($categories->sum('expected') > 0)
+           {
+             $expectedExpensePercentage = $expenseTransactions->sum('value') / $categories->sum('expected') * 100;
+           }
         $expectedExpensePercentage = Charts::create('progressbar', 'progressbarjs')
               ->title(round($expectedExpensePercentage, 2).' Percent of Budget Spent')
               ->elementLabel('')
@@ -106,7 +101,7 @@ class AccountingPeriodController extends Controller
               ->height(30)
               ->width(0);
 
-        $expectedIncomePercentage = $incomeTransactions->sum('value') / $categories->first()->budgets->first()->monthly_income * -100;
+        $expectedIncomePercentage = 0;//$incomeTransactions->sum('value') / $categories->first()->budgets->first()->monthly_income * -100;
         $expectedIncomePercentage = Charts::create('progressbar', 'progressbarjs')
                     ->title(round($expectedIncomePercentage, 2).' Percent of Income Received')
                     ->elementLabel('')
@@ -121,7 +116,7 @@ class AccountingPeriodController extends Controller
           'charts' => [
             'spendingByDay' => $chartSpendingByDay,
             'categoryBalance' => $categoryBalance,
-            'categoryBreakdown' => $categoryBreakdown,
+        //    'categoryBreakdown' => $categoryBreakdown,
             'spendPercentage' => $spendPercentage,
             'expectedExpensePercentage' => $expectedExpensePercentage,
             'expectedIncomePercentage' => $expectedIncomePercentage,

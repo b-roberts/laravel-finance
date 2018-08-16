@@ -55,7 +55,9 @@ class AccountController extends Controller
      */
     public function show($id)
     {
-      return view('pages.accounts.show');
+        $account = Account::find($id);
+        $accountGraph = new \App\Charts\Account($id);
+        return view('pages.accounts.show',['account'=>$account,'accountGraph'=>$accountGraph]);
     }
 
     /**

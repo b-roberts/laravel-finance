@@ -38,7 +38,7 @@ class CalculateAccountBalances extends Command
     public function handle()
     {
         //
-        foreach([1,3,6] as $accountID)
+        foreach([8] as $accountID)
         {
         \DB::table('account_balance')->where('account_id',$accountID)->where('calculated',1)->delete();
 

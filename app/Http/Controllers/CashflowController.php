@@ -13,7 +13,7 @@ class CashflowController extends Controller
 
         $chartCashFlow = new \App\Charts\Cashflow($transactions);
         $chartNetIncome = new \App\Charts\NetIncome($transactions);
-        $chartNetWorth = new \App\Charts\NetWorth($transactions);
+        $chartNetWorth = new \App\Charts\NetWorth();
 
         return view('pages.accounting_periods.cashflow', [
                               'charts' => [

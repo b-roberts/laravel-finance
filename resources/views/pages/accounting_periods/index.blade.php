@@ -10,7 +10,8 @@
 
     </div>
     <div class="col-8">
-      {!! $charts['categoryBreakdown']->html() !!}
+      @include('charts.categoryBreakdown')
+
     </div>
   </div>
     <div class="row">

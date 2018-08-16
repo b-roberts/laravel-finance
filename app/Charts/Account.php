@@ -2,7 +2,7 @@
 
 namespace App\Charts;
 
-class NetWorth extends \ConsoleTVs\Charts\Builder\Multi
+class Account extends \ConsoleTVs\Charts\Builder\Multi
 {
     private function movingAverage($values)
     {
@@ -10,6 +10,9 @@ class NetWorth extends \ConsoleTVs\Charts\Builder\Multi
             $averages = trader_kama($values, 7);
             //Fill in array with nulls to keep length the same
             $i = 0;
+            if (!$averages) {
+                return [0];
+            }
             while (!isset($averages[$i]) && $i < sizeof($averages)) {
                 $averages[$i++] = null;
             }
@@ -38,24 +41,26 @@ class NetWorth extends \ConsoleTVs\Charts\Builder\Multi
         }
     }
 
-    public function __construct()
+    public function __construct($accountID)
     {
         parent::__construct('line', 'google');
         $reportedBalances=\DB::table('account_balance')->groupBy('date')
         ->whereRaw('DAYOFWEEK(date)=1')
+        ->where('account_id', $accountID)
         ->select(['date',\DB::raw('sum(value) value')])->get();
         $netData = $reportedBalances->pluck('value')->all();
-
-$tsf = trader_tsf ($netData);
-$tsf[0]=0;
+        if(!sizeof($netData))
+        {
+            $this->dataset('NO DATA',[0])
+            ->labels([0]);
+            return;
+        }
         $this
-                      ->title('Net Worth')
-
+                      ->title('Account Balance')
                       ->dimensions(1000, 250)
                       ->responsive(false)
-                      ->dataset('Net Income', $netData)
-                      ->dataset('Networth', $this->movingAverage($netData))
-                     // ->dataset('tsf',$tsf)
+                      ->dataset('Balance', $netData)
+                      ->dataset('Average', $this->movingAverage($netData))
                     //  ->colors(['#CC444B'])
                       ->labels($reportedBalances->pluck('date')->all())
                     ;

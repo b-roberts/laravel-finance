@@ -30,21 +30,15 @@
     };
 
     var myLineChart = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: data,
 
         options: {
           tooltips: {
-            yPadding: 0,
-            caretSize: 0,
-            titleSpacing: 0,
-            titleMarginBottom: 0,
-            titleFontSize:10,
-            bodyFontSize: 10,
-            displayColors: false
+              enabled:false
           },
           responsive: false,
-          maintainAspectRatio: false,
+          maintainAspectRatio: true,
     legend: {
       display: false
     },
@@ -86,5 +80,4 @@
     });
 </script>
 
-
-<canvas id="{{ $model->id }}" height="20"    ></canvas>
+<canvas id="{{ $model->id }}"     ></canvas>

@@ -10,6 +10,7 @@ class IncomeStatementController extends Controller
     public function index($startDate, $endDate = null)
     {
         $startDate = new  Carbon($startDate);
+        $startDate->day=1;
         if (null == $endDate) {
             $endDate = (new  Carbon($startDate))->addMonth();
         } else {

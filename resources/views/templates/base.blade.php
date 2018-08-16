@@ -12,6 +12,9 @@
 </head>
 <body>
   @include('modules.navigation')
+  @if(session('flash_success'))
+  {{session('flash_success')}}
+  @endif
 @yield('_content')
 
 

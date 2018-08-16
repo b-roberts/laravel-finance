@@ -7,7 +7,7 @@ class NetWorth extends \ConsoleTVs\Charts\Builder\Multi
     private function movingAverage($values)
     {
         if (function_exists('trader_kama')) {
-            $averages = trader_kama($values, 7);
+            $averages = trader_tsf($values, 7);
             //Fill in array with nulls to keep length the same
             $i = 0;
             while (!isset($averages[$i]) && $i < sizeof($averages)) {
@@ -51,7 +51,7 @@ $tsf[0]=0;
         $this
                       ->title('Net Worth')
 
-                      ->dimensions(1000, 250)
+                      ->dimensions(1250, 500)
                       ->responsive(false)
                       ->dataset('Net Income', $netData)
                       ->dataset('Networth', $this->movingAverage($netData))

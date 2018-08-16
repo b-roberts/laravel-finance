@@ -73,7 +73,7 @@ class CategorySpending extends \ConsoleTVs\Charts\Builder\Multi
 
         $this
       ->title('Monthly Cashflow')
-      ->dimensions(1000, 250)
+      ->dimensions(1250, 500)
       ->responsive(false)
 ->dataset('actual', $expenses->values()->all())
       ->dataset('averageExpense', $this->movingAverage($expenses->values()->all()))

@@ -53,7 +53,7 @@ class NetIncome extends \ConsoleTVs\Charts\Builder\Multi
         $this
                       ->title('Monthly Net Income')
 
-                      ->dimensions(1000, 250)
+                      ->dimensions(1250, 500)
                       ->responsive(false)
                       ->dataset('Net Income', $netData)
                       ->dataset('Average Net Income', $averageNetData)

@@ -4,42 +4,8 @@ namespace App\Charts;
 
 use Carbon\Carbon;
 
-class CategorySpending extends \ConsoleTVs\Charts\Builder\Multi
+class CategorySpending extends BaseChart
 {
-    private function movingAverage($values)
-    {
-        if (function_exists('trader_kama')) {
-            $averages = trader_kama($values, 2);
-            //Fill in array with nulls to keep length the same
-            $i = 0;
-            while (!isset($averages[$i]) && $i < sizeof($averages)) {
-                $averages[$i++] = null;
-            }
-
-            return $averages;
-        } else {
-            $sma = [];
-            $position = 0;
-            while (empty($values[$position])) {
-                ++$position;
-            }
-            $i = $position;
-            while (true) {
-                if (empty($values[$i + $range - 1])) {
-                    break;
-                }
-                $temp_sum = 0;
-                for ($j = $i; $j < $i + $range; ++$j) {
-                    $temp_sum += $values[$j];
-                }
-                $sma[$i + $range - 1] = $temp_sum / $range;
-                ++$i;
-            }
-
-            return $sma;
-        }
-    }
-
     public function __construct($categoryID, $library = 'google', $since = '2014-02-01', $until = null)
     {
         parent::__construct('line', $library);

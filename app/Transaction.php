@@ -14,6 +14,10 @@ class Transaction extends Model
     protected $table = 'transactions';
     public $timestamps = false;
 
+    protected $dates = [
+        'date'
+    ];
+
     public function account()
     {
         return $this->belongsTo('App\Account');

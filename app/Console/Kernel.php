@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
       \App\Console\Commands\PredictExisting::class,
-      \App\Console\Commands\CalculateAccountBalances::class
+      \App\Console\Commands\CalculateAccountBalances::class,
+      \App\Console\Commands\Export::class
     ];
 
     /**

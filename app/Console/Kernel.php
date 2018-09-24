@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
       \App\Console\Commands\PredictExisting::class,
+      \App\Console\Commands\FetchStockData::class,
       \App\Console\Commands\CalculateAccountBalances::class
     ];
 
@@ -26,6 +27,8 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        $schedule->command('fetch-stocks')->daily();
     }
 
     /**

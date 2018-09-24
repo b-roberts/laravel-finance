@@ -9,6 +9,7 @@
         "asgrim/ofxparser": "^1.2",
         "barryvdh/laravel-debugbar": "~2.4",
         "consoletvs/charts": "5.*",
+        "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",

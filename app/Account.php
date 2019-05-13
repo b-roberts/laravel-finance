@@ -17,6 +17,11 @@ class Account extends Model
         return $this->hasMany('App\AccountBalance');
     }
 
+    public function transactions()
+    {
+        return $this->hasMany('App\Transaction');
+    }
+
     public function getBalance()
     {
         $balance = $this->balances()->orderBy('date', 'desc')->first();

@@ -8,7 +8,7 @@ class Account extends BaseChart
     {
         parent::__construct('line', 'google');
         $reportedBalances=\DB::table('account_balance')->groupBy('date')
-        ->whereRaw('DAYOFWEEK(date)=1')
+        ->whereRaw('DAYOFWEEK(date)=3')
         ->where('account_id', $accountID)
         ->select(['date',\DB::raw('sum(value) value')])->get();
         $netData = $reportedBalances->pluck('value')->all();

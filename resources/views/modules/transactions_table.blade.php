@@ -12,6 +12,17 @@
 
       window.open($(this).attr('href'),'window','toolbar=no, menubar=no, resizable=no, height=500, width=700')
       " target="myiframe" data-toggle="modal" data-target="#myModal">
+      <?php switch($transaction->allocation_type){
+        case 'regex':
+        echo '<i class="fas fa-shapes"></i>';
+        break;
+        case 'Learned':
+        echo '<i class="fas fa-magic"></i>';
+        break;
+        case 'manual':
+        echo '<i class="fas fa-user"></i>';
+        break;
+      } ?>
     <strong>{{$transaction->location}}</strong><br />
 {{$transaction->id}} {{$transaction->allocation_type}}
 </a>

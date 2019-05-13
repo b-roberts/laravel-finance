@@ -122,7 +122,12 @@ $(document).on('keypress', 'input', function(evt)
 var keyCode = evt ? (evt.which ? evt.which : evt.keyCode) : event.keyCode;
 	  if (keyCode == 13) {
 evaluateLine(this);
+if(event.shiftKey){
+  console.log('SUBMIT')
+  $('form:first').submit();
+}
 return false;
+
 }
 
 });
@@ -192,6 +197,10 @@ function onEnter(evt,callback)
 function evaluateLine(line)
 {
  var x = $(line).val();
+if(x=='x'){
+  x=parseFloat($('#total').html());
+}
+
 		  var v =  new Function('return ' + x + ';')();
 		  if (typeof v !== NaN && v >0)
 			  {

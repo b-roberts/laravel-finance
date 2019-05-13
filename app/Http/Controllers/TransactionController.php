@@ -13,10 +13,174 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = \App\Transaction::where('date', '>', '2017-05-01')->orderBy('date','desc')->orderBy('value')->get();
+        $transactions = \App\Transaction::where('date', '>', '2017-05-01')
+        ->with('categories')
+        ->orderBy('date','desc')
+        ->orderBy('value')
+        ->take(200)
+        ->get();
 
-        return view('pages.transactions.index', ['transactions' => $transactions]);
+
+        $categories = \App\Category::get();
+
+        return view('pages.transactions.index', ['transactions' => $transactions,'categories'=>$categories]);
     }
+
+    public function indexVue(Request $request)
+    {
+
+
+      $categories =[];
+      foreach(\App\Category::get() as $category)
+      {
+        $categories[$category->name]=100;
+      }
+
+      $payees =[];
+      foreach(\App\Payee::get() as $payee)
+      {
+        $payees[$payee->name]=100;
+      }
+      $accounts =[];
+      foreach(\App\Account::get() as $account)
+      {
+        $accounts[$account->name]=100;
+      }
+      $facetFilters=[];
+      $numericFilters=[];
+      if(isset($request->get('requests')[0]['params']['facetFilters']))
+      $facetFilters = ($request->get('requests')[0]['params']['facetFilters'][0]);
+
+      if(isset($request->get('requests')[0]['params']['numericFilters']))
+      $numericFilters = ($request->get('requests')[0]['params']['numericFilters']);
+
+$tq = \App\Transaction::where('date', '>', '2017-05-01')
+->with('categories')->with('account')
+->orderBy('date','desc')
+->orderBy('value');
+
+$tq = $tq->where('location','like','%'.$request->get('requests')[0]['params']['query'] . '%');
+
+      foreach($facetFilters as $filter)
+      {
+        list($facet,$value) = explode(':',$filter);
+        if($facet == 'category')
+        {
+          $tq->whereHas('categories',function($query) use ($value){
+            $query->where('name',$value);
+          });
+        }
+        if($facet == 'payee')
+        {
+          $tq->whereHas('payee',function($query) use ($value){
+            $query->where('name',$value);
+          });
+        }
+        if($facet == 'account')
+        {
+          $tq->whereHas('account',function($query) use ($value){
+            $query->where('name',$value);
+          });
+        }
+        if($facet == 'direction')
+        {
+          $tq->where('value','<',0);
+        }
+        if($facet == 'direction')
+        {
+          if($value=='credit')
+            $tq->where('value','<',0);
+          if($value=='debit')
+            $tq->where('value','>',0);
+        }
+      }
+
+      foreach($numericFilters as $filter){
+        list($facet,$value) = explode('=',$filter);
+        if($facet=='amount>'){
+            $tq->where('value','>=',$value);
+        }
+        if($facet=='amount<'){
+            $tq->where('value','<=',$value);
+        }
+
+      }
+
+$numHits  =$tq->count();
+$hitsPerPage = 50;
+$curPage = $request->get('requests')[0]['params']['page'];
+
+
+$sql = $tq->toSql();
+      $hits = $tq
+    ->take($hitsPerPage)
+    ->skip($curPage * $hitsPerPage)
+    ->get()->map(function($e){
+      $e->objectId=$e->id;
+      $e->accountName = $e->account->name;
+      $e->url=route('transaction.show',$e->id);
+      return $e;
+    });
+
+$result = [
+  'facets'=>[
+    'category'=>$categories,
+    'payee'=>$payees,
+    'account'=>$accounts,
+    'direction'=>['credit'=>1000,'debit'=>1000],
+    'amount'=>[50=>4,40=>3]
+  ],
+  'facets_stats'=>[
+    'amount'=>[
+    'avg'=>38,'max'=>1000,'min'=>0,'sum'=>39
+    ]
+  ]
+  ,
+  'hitsPerPage'=>$hitsPerPage,
+  'index'=>'x',
+  'nbHits'=>$numHits,
+  'nbPages'=>ceil($numHits/$hitsPerPage),
+  'page'=>0,
+  'params'=>'',
+  'processingTime'=>0,
+  'query'=>$sql,
+  'exhaustiveFacetsCount'=>true,
+  'exhaustiveNbHits'=>false,
+
+  'hits'=>$hits];
+
+  $response = [];
+  for($i=0;$i<sizeof($request->get('requests'));$i++)
+  {
+    $response[]=$result;
+  }
+  return ['results'=>$response];
+
+      return  (['results'=>[
+
+        [
+          'facets'=>[
+            'category'=>$categories,
+            'payee'=>$payees,
+            'amount'=>[50=>4,40=>3]
+          ],
+          'hitsPerPage'=>10,
+          'index'=>'x',
+          'nbHits'=>20,
+          'nbPages'=>40,
+          'page'=>0,
+          'params'=>'',
+          'processingTime'=>0,
+          'query'=>$sql,
+          'exhaustiveFacetsCount'=>true,
+          'exhaustiveNbHits'=>false,
+
+          'hits'=>$hits]
+
+
+      ]]);
+    }
+
     public function search($query)
     {
         $transactions = \App\Transaction::where('date', '>', '2017-05-01')->where('location','like','%'.$query . '%')->orderBy('date','desc')->orderBy('value')->get();

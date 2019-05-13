@@ -28,7 +28,10 @@ class Transaction extends Model
     {
         return $this->hasOne('App\Note');
     }
-
+    public function payee()
+    {
+        return $this->belongsTo('App\Payee');
+    }
     public function toDataTableArray()
     {
         $return = array();

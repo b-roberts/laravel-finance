@@ -234,6 +234,7 @@ Barryvdh\Debugbar\ServiceProvider::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'Charts' => ConsoleTVs\Charts\Facades\Charts::class,
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
     ],
 
 ];

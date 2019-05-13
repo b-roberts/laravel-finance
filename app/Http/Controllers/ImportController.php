@@ -26,13 +26,14 @@ class ImportController extends Controller
     {
         $validatedData = $this->validate($request, [
           'account_id' => 'required|exists:accounts,id',
-          'statement' => 'required|mimetypes:text/plain',
+        //  'statement' => 'required|mimetypes:text/plain',
         ]);
         $statementFile = $request->file('statement');
         $accountID = $request->input('account_id');
         $ofxParser = new \OfxParser\Parser();
         $ofx = $ofxParser->loadFromFile($statementFile);
         $bankAccount = reset($ofx->bankAccounts);
+        dd($ofx);
         /**
          * @var string Used to group transactions by import batch for easier duplication resolution
          */

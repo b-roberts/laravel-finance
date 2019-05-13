@@ -15,6 +15,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
       \App\Console\Commands\PredictExisting::class,
       \App\Console\Commands\FetchStockData::class,
+      \App\Console\Commands\AssignPayees::class,
+      \App\Console\Commands\RunRules::class,
       \App\Console\Commands\CalculateAccountBalances::class
     ];
 

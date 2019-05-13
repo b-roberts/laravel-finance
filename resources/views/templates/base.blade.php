@@ -5,13 +5,12 @@
 <link rel="stylesheet" href="css/theme.default.min.css"  />
 <link rel="stylesheet" href="css/theme.bootstrap.min.css"  />
 <link rel="stylesheet" href="css/opft.css"  />
+<link rel="stylesheet" href="css/app.css"  />
 {!! Charts::styles() !!}
 @stack('styles')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
-
-
 </head>
 <body>
   @include('modules.navigation')

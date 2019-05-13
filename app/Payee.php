@@ -12,4 +12,8 @@ class Payee extends Model
   {
     return $this->match;
   }
+  public function transactions()
+  {
+      return $this->hasMany('App\Transaction');
+  }
 }

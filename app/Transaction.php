@@ -13,6 +13,8 @@ class Transaction extends Model
      */
     protected $table = 'transactions';
     public $timestamps = false;
+    protected $appends = ['icon'];
+
 
     public function account()
     {
@@ -49,6 +51,16 @@ class Transaction extends Model
         case '0':return 'manual';
         case '1':return 'regex';
         case '2':return 'Learned';
+      }
+    }
+
+    public function getIconAttribute()
+    {
+      switch($this->attributes['allocation_type'])
+      {
+        case '0':return 'fa-user';
+        case '1':return 'fa-shapes';
+        case '2':return 'fa-magic';
       }
     }
 }

@@ -25,7 +25,10 @@
       onclick="$('#myiframe').attr('src',$(this).attr('href'));
         window.open($(this).attr('href'),'window','toolbar=no, menubar=no, resizable=no, height=500, width=700')"
       target="myiframe" data-toggle="modal" data-target="#myModal">
-      <strong style="font-size:1.25em;">@{{location}}</strong><br />
+      <strong style="font-size:1.25em;">
+        <i class="fas @{{icon}}"></i>
+        @{{location}}
+      </strong><br />
       <strong>@{{type}}</strong> @{{id}} <em>@{{allocation_type}} </em>
     </a>
   </div>
@@ -108,7 +111,7 @@ search.addWidget(
     autoHideContiner: false,
     collapsible:false,
     templates: {
-      header: 'Categories'
+      header: '<p class="ais-header">Direction</p>'
     }
   })
 );
@@ -118,7 +121,9 @@ search.addWidget(
   attributeName: 'category',
   autoHideContiner: false,
   collapsible:false,
-
+  templates: {
+    header: '<p class="ais-header">Category</p>'
+  },
 }));
 
 
@@ -128,7 +133,9 @@ search.addWidget(instantsearch.widgets.refinementList({
      limit: 50,
  autoHideContiner: false,
  collapsible:false,
-
+ templates: {
+   header: '<p class="ais-header">Payee</p>'
+ },
 }));
 
 

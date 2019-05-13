@@ -31,20 +31,20 @@ class TransactionController extends Controller
 
 
       $categories =[];
-      foreach(\App\Category::get() as $category)
+      foreach(\App\Category::withCount('transactions')->get() as $category)
       {
-        $categories[$category->name]=100;
+        $categories[$category->name]=$category->transactions_count;
       }
 
       $payees =[];
-      foreach(\App\Payee::get() as $payee)
+      foreach(\App\Payee::withCount('transactions')->get() as $payee)
       {
-        $payees[$payee->name]=100;
+        $payees[$payee->name]=$payee->transactions_count;
       }
       $accounts =[];
-      foreach(\App\Account::get() as $account)
+      foreach(\App\Account::withCount('transactions')->get() as $account)
       {
-        $accounts[$account->name]=100;
+        $accounts[$account->name]=$account->transactions_count;
       }
       $facetFilters=[];
       $numericFilters=[];
@@ -117,7 +117,7 @@ $sql = $tq->toSql();
     ->skip($curPage * $hitsPerPage)
     ->get()->map(function($e){
       $e->objectId=$e->id;
-      $e->accountName = $e->account->name;
+      $e->accountName = ($e->account) ? $e->account->name : '[UNKNOWN]';
       $e->url=route('transaction.show',$e->id);
       return $e;
     });

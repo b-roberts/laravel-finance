@@ -46,6 +46,13 @@ class TransactionController extends Controller
       {
         $accounts[$account->name]=$account->transactions_count;
       }
+
+      $methods =[];
+      foreach(['manual','regex','Learned'] as $id=>$method)
+      {
+        $methods[$method]=\App\Transaction::where('allocation_type',$id)->count();
+      }
+
       $facetFilters=[];
       $numericFilters=[];
       if(isset($request->get('requests')[0]['params']['facetFilters']))
@@ -81,6 +88,18 @@ $tq = $tq->where('location','like','%'.$request->get('requests')[0]['params']['q
           $tq->whereHas('account',function($query) use ($value){
             $query->where('name',$value);
           });
+        }
+        if($facet == 'method')
+        {
+          switch($value)
+          {
+            case 'manual':
+            $tq->where('allocation_type',0); break;
+            case 'regex':
+            $tq->where('allocation_type',1); break;
+            case 'Learned':
+            $tq->where('allocation_type',2); break;
+          }
         }
         if($facet == 'direction')
         {
@@ -127,6 +146,7 @@ $result = [
     'category'=>$categories,
     'payee'=>$payees,
     'account'=>$accounts,
+    'method' =>$methods,
     'direction'=>['credit'=>1000,'debit'=>1000],
     'amount'=>[50=>4,40=>3]
   ],
@@ -161,6 +181,7 @@ $result = [
         [
           'facets'=>[
             'category'=>$categories,
+            'method'=>$methods,
             'payee'=>$payees,
             'amount'=>[50=>4,40=>3]
           ],

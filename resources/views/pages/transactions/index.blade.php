@@ -8,6 +8,7 @@
     <div id="ais-category"></div>
     <div id="ais-payee"></div>
     <div id="ais-direction"></div>
+    <div id="ais-method"></div>
   </div>
   <div class="col-10" id="hits">
 
@@ -135,6 +136,17 @@ search.addWidget(instantsearch.widgets.refinementList({
  collapsible:false,
  templates: {
    header: '<p class="ais-header">Payee</p>'
+ },
+}));
+
+search.addWidget(instantsearch.widgets.refinementList({
+ container: '#ais-method',
+ attributeName: 'method',
+     limit: 50,
+ autoHideContiner: false,
+ collapsible:false,
+ templates: {
+   header: '<p class="ais-header">Method</p>'
  },
 }));
 

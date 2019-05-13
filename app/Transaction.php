@@ -58,9 +58,9 @@ class Transaction extends Model
     {
       switch($this->attributes['allocation_type'])
       {
-        case '0':return 'fa-user';
-        case '1':return 'fa-shapes';
-        case '2':return 'fa-magic';
+        case 'manual':return 'fa-user';
+        case 'regex':return 'fa-shapes';
+        case 'Learned':return 'fa-magic';
       }
     }
 }

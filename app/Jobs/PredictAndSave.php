@@ -10,7 +10,7 @@ class PredictAndSave
 
   public function handle()
   {
-    $transactions = \App\Transaction::doesntHave('categories')->where('value','>',0)->get();
+    $transactions = \App\Transaction::doesntHave('categories')->where('value','>',0)->where('payee_id','>',0)->get();
     foreach($transactions as $transaction)
     {
       $prediction =  dispatch(new \App\Jobs\PredictAllocations($transaction));

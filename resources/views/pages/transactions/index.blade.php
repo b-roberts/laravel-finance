@@ -9,6 +9,11 @@
     <div id="ais-payee"></div>
     <div id="ais-direction"></div>
     <div id="ais-method"></div>
+    <div id="refinement-list">
+      <h3>Dates</h3>
+      <div id="calendar" class="daterange"></div>
+    </div>
+
   </div>
   <div class="col-10" id="hits">
 
@@ -18,7 +23,8 @@
 <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.1"></script>
 
 <script id="hitTemplate" type="text/html">
-<div class="row" >
+  <hr class="my-4" />
+<div class="row my-4" >
   <div class="col-2">@{{date}}</div>
   <div class="col-4" >
     <a
@@ -28,15 +34,14 @@
       target="myiframe" data-toggle="modal" data-target="#myModal">
       <strong style="font-size:1.25em;">
         <i class="fas @{{icon}}"></i>
-        @{{location}}
+        @{{label}}
       </strong><br />
-      <strong>@{{type}}</strong> @{{id}} <em>@{{allocation_type}} </em>
+      <strong>@{{type}}</strong> @{{id}} <em>@{{allocation_type}} </em><br />
+      <small><i class="far fa-credit-card"></i> @{{account.name}}</small>
     </a>
   </div>
-  <div class="col-3">@{{value}}</div>
-  <div class="col-1">
+  <div class="col-1">@{{value}}</div>
 
-</div>
 <div class="col-2">
 @{{#categories}}
   <span  class="badge" style="background-color:@{{color}};color:@{{alt_color}}">
@@ -48,21 +53,31 @@
 
 
 <!-- Default dropleft button -->
-<div class="btn-group dropleft">
-  <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<div class=" dropleft">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     ...
   </button>
   <div class="dropdown-menu">
-    <a class="dropdown-item" >See All @{{location}}</a>
+    <a class="dropdown-item" onclick="viewLocation('@{{location}}')">See All @{{location}}</a>
+    <a class="dropdown-item" href="{{route('rule.create')}}?match=%2F@{{location}}%2F" target="_blank">Create Rule Like This</a>
 <a class="dropdown-item" href="#">Delete</a>
   </div>
 </div>
+<input type="checkbox" data-transaction-check="@{{id}}" value="@{{id}}"/>
 </div>
 </div>
 </script>
 
 @push('scripts')
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+  <script src="https://unpkg.com/BaremetricsCalendar@1.0.11/public/js/Calendar.js"></script>
 <script>
+
+function viewLocation(location){
+
+}
+
+
 const customSearchClient = {
   search(requests) {
     return fetch('{{route('vue.transactions')}}', {
@@ -76,7 +91,7 @@ const customSearchClient = {
   }
 };
 
-const search = instantsearch({
+var search = instantsearch({
 
   indexName: 'instant_search',
   searchClient: customSearchClient,
@@ -150,6 +165,38 @@ search.addWidget(instantsearch.widgets.refinementList({
  },
 }));
 
+
+
+const makeRangeWidget = instantsearch.connectors.connectRange(
+  (options, isFirstRendering) => {
+    if (!isFirstRendering) return;
+
+    const { refine } = options;
+
+    new Calendar({
+      element: $('#calendar'),
+      same_day_range: true,
+      callback: function() {
+        const start = new Date(this.start_date).getTime();
+        const end = new Date(this.end_date).getTime();
+        const actualEnd = start === end ? end + ONE_DAY_IN_MS - 1 : end;
+
+        refine([start, actualEnd]);
+      },
+      // Some good parameters based on our dataset:
+      start_date: new Date(),
+      end_date: new Date('{{date('M/D/Y')}}'),
+      earliest_date: new Date('01/01/2008'),
+      latest_date: new Date('{{date('M/D/Y')}}'),
+    });
+  }
+);
+
+const dateRangeWidget = makeRangeWidget({
+  attributeName: 'date',
+});
+
+search.addWidget(dateRangeWidget);
 
 search.start();
 

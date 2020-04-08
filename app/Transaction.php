@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
 {
+   use SoftDeletes;
     /**
      * The database table used by the model.
      *
@@ -56,11 +58,22 @@ class Transaction extends Model
 
     public function getIconAttribute()
     {
+      if ($this->type=='transfer')
+      {
+        return 'fa-random text-success';
+      }
+      if ($this->value < 0) {
+        return 'fa-hand-holding-usd text-success';
+      }
+      if ($this->categories->count()==0)
+      {
+        return 'fa-question text-danger';
+      }
       switch($this->attributes['allocation_type'])
       {
-        case 'manual':return 'fa-user';
-        case 'regex':return 'fa-shapes';
-        case 'Learned':return 'fa-magic';
+        case '0':return 'fa-user';
+        case '1':return 'fa-shapes text-warning';
+        case '2':return 'fa-magic';
       }
     }
 }

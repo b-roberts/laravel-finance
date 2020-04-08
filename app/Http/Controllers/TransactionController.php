@@ -28,7 +28,7 @@ class TransactionController extends Controller
 
     public function indexVue(Request $request)
     {
-
+      $queryTerm = $request->get('requests')[0]['params']['query'];
 
       $categories =[];
       foreach(\App\Category::withCount('transactions')->get() as $category)
@@ -37,6 +37,7 @@ class TransactionController extends Controller
       }
 
       $payees =[];
+      $payees['UNKNOWN']=\App\Transaction::doesnthave('payee')->count();
       foreach(\App\Payee::withCount('transactions')->get() as $payee)
       {
         $payees[$payee->name]=$payee->transactions_count;
@@ -62,11 +63,14 @@ class TransactionController extends Controller
       $numericFilters = ($request->get('requests')[0]['params']['numericFilters']);
 
 $tq = \App\Transaction::where('date', '>', '2017-05-01')
-->with('categories')->with('account')
+->with('categories')->with('account')->with('payee')
 ->orderBy('date','desc')
 ->orderBy('value');
 
-$tq = $tq->where('location','like','%'.$request->get('requests')[0]['params']['query'] . '%');
+$tq = $tq->where(
+  function($query) use ($queryTerm){
+    $query->where('location','like','%'.$queryTerm . '%')->orWhere('value',$queryTerm);
+  });
 
       foreach($facetFilters as $filter)
       {
@@ -79,9 +83,15 @@ $tq = $tq->where('location','like','%'.$request->get('requests')[0]['params']['q
         }
         if($facet == 'payee')
         {
+
+          if ($value =='UNKNOWN'){
+          $tq->doesnthave('payee');
+        }
+        else{
           $tq->whereHas('payee',function($query) use ($value){
             $query->where('name',$value);
           });
+        }
         }
         if($facet == 'account')
         {
@@ -122,11 +132,18 @@ $tq = $tq->where('location','like','%'.$request->get('requests')[0]['params']['q
         if($facet=='amount<'){
             $tq->where('value','<=',$value);
         }
-
+        if($facet=='date<'){
+          $dateValue = \Carbon\Carbon::createFromTimestamp(substr($value,0,10));
+            $tq->whereDate('date','<=',$dateValue);
+        }
+        if($facet=='date>'){
+          $dateValue = \Carbon\Carbon::createFromTimestamp(substr($value,0,10));
+            $tq->whereDate('date','>=',$dateValue);
+        }
       }
 
 $numHits  =$tq->count();
-$hitsPerPage = 50;
+$hitsPerPage = 500;
 $curPage = $request->get('requests')[0]['params']['page'];
 
 
@@ -136,6 +153,7 @@ $sql = $tq->toSql();
     ->skip($curPage * $hitsPerPage)
     ->get()->map(function($e){
       $e->objectId=$e->id;
+      $e->label = ($e->payee) ?"◖" .  $e->payee->name : $e->location;
       $e->accountName = ($e->account) ? $e->account->name : '[UNKNOWN]';
       $e->url=route('transaction.show',$e->id);
       return $e;
@@ -289,6 +307,7 @@ $result = [
       }
     }
       $transaction->allocation_type=0;
+      $transaction->type=$request->get('type');
       $transaction->save();
 
       return redirect()->route('transaction.show',$transaction->id);

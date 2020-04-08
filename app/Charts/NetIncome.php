@@ -10,11 +10,21 @@ class NetIncome extends BaseChart
         $transactionsByMonth = $transactions->groupBy(function ($item, $key) {
             return date('m-y', strtotime($item['date']));
         });
+        $nonExceptionalTransactionsByMonth = $transactions->filter(function($item){
+          return !$item->exceptional;
+        })->groupBy(function ($item, $key) {
+            return date('m-y', strtotime($item['date']));
+        });
+
 
         $netData = $transactionsByMonth->map(function ($chunk) {
             return $chunk->sum('value') * -1;
         })->values()->all();
-        $averageNetData = $this->movingAverage($netData);
+
+        $netData2 = $nonExceptionalTransactionsByMonth->map(function ($chunk) {
+            return $chunk->sum('value') * -1;
+        })->values()->all();
+        $averageNetData = $this->movingAverage($netData2);
 
         $this
                       ->title('Monthly Net Income')

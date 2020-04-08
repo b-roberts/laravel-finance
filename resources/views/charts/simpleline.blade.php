@@ -41,7 +41,8 @@
             titleMarginBottom: 0,
             titleFontSize:10,
             bodyFontSize: 10,
-            displayColors: false
+            displayColors: false,
+            mode: 'label'
           },
           responsive: false,
           maintainAspectRatio: false,

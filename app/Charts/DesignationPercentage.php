@@ -3,64 +3,46 @@
 namespace App\Charts;
 
 use Carbon\Carbon;
+use App\Repositories\TransactionRepository;
 
-class DesignationPercentage extends BaseChart
+class DesignationPercentage extends \ConsoleTVs\Charts\Builder\Chart
 {
-    public function __construct( $library = 'google', $since = '2014-02-01', $until = null)
+    public function __construct( $library = 'google', $startDate = null, $endDate = null)
     {
-        parent::__construct('line', $library);
+        parent::__construct('pie', 'google');
 
-        $designations = \App\Designation::all();
+        $categories = \App\Category::with(['designation'])->with(['transactions'=>function($query) use ($startDate, $endDate){
+          $query->      where('date', '>=', $startDate->toDateString())->
+                where('date', '<=', $endDate->toDateString())->
+                where('type', 'payment');
+        }])->get();
 
-        foreach ($designations as $designation) {
-          foreach($designation->categories as $category)
-          {
-            $expenses = $this->getCategoryDataset($category->id);
+$categories->map(function($cat){
+  $cat->total = $cat->transactions->sum('pivot.value');
+});
+$cbyd = $categories->groupBy('designation_id')->map(function($collection){
+  $designation = $collection->first()->designation;
+  $designation->value = $collection->sum('total');
+  return $designation;
+});
+$values = $cbyd->pluck('value');
+$labels = $cbyd->pluck('name');
 
-                  $this->dataset($category->name, array($this->movingAverage($expenses->values()->all())));
-                  break;
-          }
-        }
+$unallocatedTransactions=TransactionRepository::unallocatedByDate($startDate,$endDate);
+$labels->push('Unallocated');
+$values->push($unallocatedTransactions->sum('value'));
 
         $this
       ->title('Monthly Cashflow')
       ->dimensions(1250, 500)
       ->responsive(false)
-
+      ->values($values->values())
+      ->labels($labels->values())
     ;
-    dump($this);
+
+
+
+
     }
 
-
-    private function getCategoryDataset($categoryID){
-      $since = '2014-02-01'; $until = null;
-      $transactions = \App\Transaction::whereHas('categories', function ($query) use ($categoryID) {
-          $query->where('category_id', $categoryID);
-      })->where('date', '>', $since)->where('date', '<', new Carbon($until))->orderBy('date')->orderBy('value')->get();
-      $transactions = $transactions->map(function ($transaction) use ($categoryID) {
-          return $transaction->categories->where('id', $categoryID)->first()->pivot;
-      });
-
-      $transactionsByMonth = $transactions->groupBy(function ($item, $key) {
-          return date('Y-m-01', strtotime($item->file_date));
-      });
-
-      $fillerDate = new Carbon($since);
-      $now = new Carbon($until);
-      while ($fillerDate < $now) {
-          $transactionsByMonth = $transactionsByMonth->union(([$fillerDate->format('Y-m-01') => null]));
-          $fillerDate->addMonth();
-      }
-
-      $transactionsByMonth = $transactionsByMonth->sortBy(function ($item, $key) {
-          return strtotime($key);
-      });
-
-      $expenses = $transactionsByMonth->map(function ($chunk) {
-          if ($chunk) {
-              return $chunk->where('value', '>', 0)->sum('value');
-          }
-      });
-      return $expenses;
-    }
 }

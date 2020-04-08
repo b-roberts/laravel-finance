@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Charts;
 use Carbon\Carbon;
+use \App\Repositories\TransactionRepository;
 
 class AccountingPeriodController extends Controller
 {
@@ -18,8 +19,8 @@ class AccountingPeriodController extends Controller
         }
 
         //Load all transactions in the period
-        $transactions = \App\Transaction::where('date', '>', $startDate->toDateString())->where('date', '<', $endDate->toDateString())->orderBy('date')->orderBy('value')->get();
 
+        $transactions = TransactionRepository::byDate($startDate, $endDate);
         $categories = \App\Category::with(['transactions' => function ($query) use ($startDate,$endDate) {
             $query->where('date', '>', $startDate->toDateString())->where('date', '<', $endDate->toDateString());
         }, 'budgets' => function ($query) {

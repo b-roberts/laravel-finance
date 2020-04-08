@@ -33,4 +33,8 @@ class Category extends Model
     {
         return $this->belongsToMany('App\Budget', 'budget_category', 'category_id', 'budget_id')->withPivot('value');
     }
+    public function designation()
+    {
+      return $this->belongsTo('App\Designation');
+    }
 }

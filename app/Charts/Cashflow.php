@@ -11,11 +11,17 @@ class Cashflow extends BaseChart
             return date('m-y', strtotime($item['date']));
         });
 
-        $averageExpenseData = $this->movingAverage($transactionsByMonth->map(function ($chunk) {
+        $nonExceptionalTransactionsByMonth = $transactions->filter(function($item){
+          return !$item->exceptional;
+        })->groupBy(function ($item, $key) {
+            return date('m-y', strtotime($item['date']));
+        });
+
+        $averageExpenseData = $this->movingAverage($nonExceptionalTransactionsByMonth->map(function ($chunk) {
             return $chunk->where('value', '>', 0)->sum('value');
         })->values()->all());
 
-        $averageIncomeData = $this->movingAverage($transactionsByMonth->map(function ($chunk) {
+        $averageIncomeData = $this->movingAverage($nonExceptionalTransactionsByMonth->map(function ($chunk) {
             return $chunk->where('value', '<', 0)->sum('value') * -1;
         })->values()->all());
 

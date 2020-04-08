@@ -35,7 +35,8 @@
 
         options: {
           tooltips: {
-              enabled:false
+              enabled:false,
+              mode: index
           },
           responsive: false,
           maintainAspectRatio: true,

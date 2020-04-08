@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Charts;
 use Carbon\Carbon;
+use \App\Repositories\TransactionRepository;
 
 class IncomeStatementController extends Controller
 {
@@ -17,15 +18,12 @@ class IncomeStatementController extends Controller
             $endDate = new Carbon($endDate);
         }
 
+        $previousStart = (new Carbon($startDate))->subMonth();
+        $previousEnd = new Carbon($startDate);
+
         //Load all transactions in the period
-        $transactions = \App\Transaction::with('categories')->
-        with('account')->
-        where('date', '>=', $startDate->toDateString())->
-        where('date', '<=', $endDate->toDateString())->
-        where('type', 'payment')->
-        orderBy('date')->
-        orderBy('value')->
-        get();
+        $transactions=TransactionRepository::paymentsByDate($startDate, $endDate);
+
         $incomeTransactions = $transactions->filter(function ($item, $key) {
             return $item->value < 0;
         });
@@ -36,14 +34,30 @@ class IncomeStatementController extends Controller
             $designation->categories = $designation->categories()->with(['transactions' => function ($query) use ($startDate,$endDate) {
                 $query->where('date', '>', $startDate->toDateString())->where('date', '<', $endDate->toDateString());
             }, 'budgets' => function ($query) {
-                $query->where('id', 3);
+                $query->where('id', 5);
             }])->get();
 
-            $designation->categories->map(function ($y) {
+            $designation->categories->map(function ($y) use ($previousStart,$previousEnd){
                     $expenseTransactions = $y->transactions->filter(function ($item, $key) {
-            return $item->value > 0;
-        });
+                        return $item->value > 0;
+                    });
                 $y->actual = $expenseTransactions->sum('pivot.value');
+
+
+
+                $previousTransactions = $y->transactions()->where('date', '>', $previousStart->toDateString())->where('date', '<', $previousEnd->toDateString())->sum('transaction_detail.value');
+                $y->previous=$previousTransactions;
+
+
+                $y->changeIcon = ($y->previous > $y->actual)  ? 'fas fa-chevron-down text-success' : 'fas fa-chevron-up text-danger';
+                if ($y->actual > 2* $y->previous) {
+                  $y->changeIcon = 'fas fa-angle-double-up text-danger';
+                }
+                if ($y->previous == $y->actual){
+                  $y->changeIcon = '';
+                }
+
+
             });
 
             $chartSince = (new  Carbon($startDate))->subMonths(6);
@@ -56,18 +70,13 @@ class IncomeStatementController extends Controller
             }
         }
 
-        $unallocatedTransactions = \App\Transaction::with('categories')->
-        with('account')->
-        where('date', '>', $startDate->toDateString())->
-        where('date', '<', $endDate->toDateString())->
-        where('type', 'payment')->
-        where('value','>',0)->
-        orderBy('date')->
-        orderBy('value')->
-        doesntHave('categories')->
-        get();
+        $unallocatedTransactions = TransactionRepository::unallocatedByDate($startDate, $endDate);
+
+        $designationChart = new \App\Charts\DesignationPercentage('google',$startDate,$endDate);
+
 
         return view('pages.income_statement', [
+          'designationChart'=>$designationChart,
           'transactions' => $transactions,
           'incomeTransactions' => $incomeTransactions,
           'unallocatedTransactions'=>$unallocatedTransactions,

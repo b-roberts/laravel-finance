@@ -31,6 +31,8 @@
       {{ method_field('PUT') }}
         {!!Form::label('description', 'Note') !!}
         {!! Form::text('note[description]'); !!}
+
+        {!! Form::select('type', ['payment'=>'Payment','transfer'=>'Transfer'],null,['class'=>'form-control']) !!}
         <div class="control-group">
 
             <div class="controls" id="fields">
@@ -116,6 +118,7 @@
 <script>
 $(function()
 {
+  window.opener.search.helper.search();
 //onblur='evaluateLine($categoryID);' onkeypress='onEnter(event,function(){evaluateLine($categoryID)});'
 $(document).on('keypress', 'input', function(evt)
 {
@@ -200,7 +203,9 @@ function evaluateLine(line)
 if(x=='x'){
   x=parseFloat($('#total').html());
 }
-
+if(x=='r'){
+  x=parseFloat($('#remainder').html());
+}
 		  var v =  new Function('return ' + x + ';')();
 		  if (typeof v !== NaN && v >0)
 			  {

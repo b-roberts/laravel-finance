@@ -15,3 +15,4 @@ yarn-error.log
 .env
 *.sql
 .php_cs.cache
+/storage/private/*

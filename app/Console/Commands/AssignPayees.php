@@ -18,7 +18,7 @@ class AssignPayees extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Assigns Payees to Transactions';
 
     /**
      * Create a new command instance.

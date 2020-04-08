@@ -15,7 +15,7 @@ class RuleController extends Controller
     public function index()
     {
         //
-        $rules = \App\Rule::orderBy('match')->get();
+        $rules = \App\Rule::orderBy('match')->with('category')->get();
         return view('pages.rule.index',['rules'=>$rules]);
     }
 

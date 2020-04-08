@@ -18,13 +18,13 @@
     table { font-size:inherit;}
     .income,.expense { text-align:right;}
     @media print {
-      body { font-size:9px!important;}
-      * { line-height: 12px; padding-top:0!important;padding-bottom:0!important;}
+      body { font-size:12px!important;}
+      * { line-height: 14px; padding-top:0!important;padding-bottom:0!important;}
     }
   </style>
   <div class="container">
 @include('modules.date_pager',['startDate'=>$startDate])
-
+{!! $designationChart->html() !!}
 <table class="table table-stripped">
   <tr>
     <th colspan="3">Income</th>
@@ -59,8 +59,8 @@
   @foreach($categories->sortByDesc('actual') as $category)
     <tr class="hidden-parint">
       <td>{{$category->name}}</td>
-      <td><div class="hidden-print">{!!  isset($charts[$category->id]) ?$charts[$category->id]->html() :''!!}</div></td>
-      <td class="expense">({{sprintf('%01.2f',$category->actual)}})</td>
+      <td><div class="hidden-print d-print-none">{!!  isset($charts[$category->id]) ?$charts[$category->id]->html() :''!!}</div></td>
+      <td class="expense"> <i class=" {{ $category->changeIcon}}" title="({{sprintf('%01.2f',$category->previous)}})"></i> ({{sprintf('%01.2f',$category->actual)}})</td>
     </tr>
   @endforeach
 
@@ -100,4 +100,5 @@
   @foreach($charts as $chart)
     {!! $chart->script() !!}
   @endforeach
+  {!! $designationChart->script() !!}
 @endpush

@@ -11,7 +11,7 @@ class CategorySpending extends BaseChart
         parent::__construct('line', $library);
         $transactions = \App\Transaction::whereHas('categories', function ($query) use ($categoryID) {
             $query->where('category_id', $categoryID);
-        })->where('date', '>', $since)->where('date', '<', new Carbon($until))->orderBy('date')->orderBy('value')->get();
+        })->where('date', '>', $since)->where('date', '<', new Carbon($until))->orderBy('date')->orderBy('value')->with('categories')->get();
         $transactions = $transactions->map(function ($transaction) use ($categoryID) {
             return $transaction->categories->where('id', $categoryID)->first()->pivot;
         });

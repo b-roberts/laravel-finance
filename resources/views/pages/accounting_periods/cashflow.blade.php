@@ -1,9 +1,9 @@
 @extends('templates.bootstrap')
 @section('content')
   <div class="container">
-        {!! $charts['cashflow']->html() !!}
-        {!! $charts['netIncome']->html() !!}
-        {!! $charts['netWorth']->html() !!}
+    @foreach($charts as $chart)
+        {!! $chart->html() !!}
+  @endforeach
 </div>
 @endsection
 @push('scripts')

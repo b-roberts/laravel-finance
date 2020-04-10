@@ -20,6 +20,7 @@ Route::resource('account', 'AccountController');
 Route::resource('category', 'CategoryController');
 Route::resource('import', 'ImportController');
 Route::resource('rule', 'RuleController');
+Route::resource('payee', 'PayeeController');
 
 Route::get('transactions/{startDate?}', 'AccountingPeriodController@index')->name('period');
 Route::get('income-statement/{startDate?}', 'IncomeStatementController@index')->name('income-statement');

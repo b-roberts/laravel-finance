@@ -60,6 +60,7 @@
   <div class="dropdown-menu">
     <a class="dropdown-item" onclick="viewLocation('@{{location}}')">See All @{{location}}</a>
     <a class="dropdown-item" href="{{route('rule.create')}}?match=%2F@{{location}}%2F" target="_blank">Create Rule Like This</a>
+    <a class="dropdown-item" href="{{route('payee.create')}}?match=%2F@{{location}}%2F" target="_blank">Create Payee Like This</a>
 <a class="dropdown-item" href="#">Delete</a>
   </div>
 </div>

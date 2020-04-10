@@ -21,6 +21,9 @@
         <a class="nav-link" href="{{route('rule.index')}}">Rules</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="{{route('payee.index')}}">Payees</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="{{route('settings')}}">Settings</a>
       </li>
     </ul>

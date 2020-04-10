@@ -1,13 +1,15 @@
-@extends('templates.bootstrap')
+@extends('templates.narrow')
 @section('content')
-  <div class="container">
-  <h1>{{$category->name}}</h1>
-        {!! $charts['cashflow']->html() !!}
+  <h1>Categories</h1>
+  <table class="table table-striped">
 
-</div>
-@endsection
-@push('scripts')
-  @foreach($charts as $chart)
-    {!! $chart->script() !!}
+  @foreach($categories as $category)
+  <tr>
+    <td>{{$category->name}}</td>
+    <td>{{$category->designation->name}}</td>
+    <td><a href="{{route('category.show',$category->id)}}" class="btn btn-secondary">View</a></td>
+  </tr>
   @endforeach
-@endpush
+  </table>
+
+@endsection

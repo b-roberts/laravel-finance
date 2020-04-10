@@ -9,6 +9,11 @@ class CategoryController extends Controller
 {
     public function index()
     {
+      $categories = \App\Category::orderBy('designation_id')->orderBy('name')->get();
+
+      return view('pages.categories.index',[
+        'categories'=>$categories
+      ]);
     }
 
     public function show($id)
@@ -23,12 +28,12 @@ class CategoryController extends Controller
         });
         $twoMonthAverage = $allocations->where('file_date', '>=', new Carbon('-2 months'))->average('value');
 
-        $cs = new \App\Charts\CategorySpending($id);
+        $categorySpendingChart = new \App\Charts\CategorySpending($id);
 
         return view('pages.categories.show', [
                             'category' => $category,
                             'charts' => [
-                                'cs' => $cs,
+                                'categorySpendingChart' => $categorySpendingChart,
                             ],
                             'averageTransactionTotal' => $transactions->average('value'),
                             'averageAllocation' => $allocations->average('value'),

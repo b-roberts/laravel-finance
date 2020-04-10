@@ -1,6 +1,7 @@
 
 // Fonts
 @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+@import url("https://fonts.googleapis.com/css?family=Oswald:300,400,600");
 
 // Variables
 @import "variables";
@@ -9,7 +10,10 @@
 // Bootstrap
 @import "node_modules/bootstrap/scss/bootstrap";
 
-
+.text-money {
+  font-family: Oswald;
+  font-weight: 300;
+}
 
 .ais-search-box {
     display: block;

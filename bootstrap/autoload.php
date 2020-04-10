@@ -14,4 +14,9 @@ define('LARAVEL_START', microtime(true));
 |
 */
 
+function money($value)
+{
+  return number_format($value,2);
+}
+
 require __DIR__.'/../vendor/autoload.php';

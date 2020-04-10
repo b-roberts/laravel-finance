@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);.daterange {
+@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);@import url(https://fonts.googleapis.com/css?family=Oswald:300,400,600);.daterange {
   position: relative;
   -webkit-box-shadow: 0 1px 1px 0 rgba(85, 95, 110, 0.2);
           box-shadow: 0 1px 1px 0 rgba(85, 95, 110, 0.2);
@@ -12050,6 +12050,11 @@ a.text-dark:focus {
     color: inherit;
     border-color: #dee2e6;
   }
+}
+
+.text-money {
+  font-family: Oswald;
+  font-weight: 300;
 }
 
 .ais-search-box {

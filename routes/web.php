@@ -15,6 +15,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::resource('transaction', 'TransactionController');
+Route::post('transaction/{id}/prediction', 'TransactionController@usePrediction')->name('transaction.usePrediction');
+
 Route::resource('budget', 'BudgetController');
 Route::resource('account', 'AccountController');
 Route::resource('category', 'CategoryController');

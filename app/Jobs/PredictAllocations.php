@@ -25,25 +25,28 @@ class PredictAllocations
 
     public function predictByHabit()
     {
-      $averageTransactions = (float) \DB::select(\DB::raw('select avg(c) average from (select location, count(*) c from transactions group by location) x'))[0]->average;
+      $averageTransactions = (float) \DB::select(\DB::raw('select avg(c) average from (select payee_id, count(*) c from transactions group by payee_id) x'))[0]->average;
 
       //Check the number of times we made a transaction at this location
-      $locationVisits = \App\Transaction::where('location',$this->transaction->location)
+      $locationVisits = \App\Transaction::where('location',$this->transaction->payee_id)
       ->where('id','<>',$this->transaction->id)
         ->count();
 
 
       //if we're greater than average, lets try to see if the dollar amount is common
       if($locationVisits < $averageTransactions) {
-        return;
+        \Debugbar::error(__LINE__);
+    //    return;
       }
 
-      $commonDollarTransactions = \App\Transaction::where('location',$this->transaction->location)
+      $commonDollarTransactions = \App\Transaction::where('payee_id',$this->transaction->payee_id)
         ->where('id','<>',$this->transaction->id)
-        ->where('value',$this->transaction->value)->whereHas('categories')->with('categories')->get();
+        ->whereRaw('(abs(value-?)/(value+?)/2) <= 0.05', [$this->transaction->value, $this->transaction->value])->whereHas('categories')->with('categories')->get();
       if(!$commonDollarTransactions){
+        \Debugbar::error(__LINE__);
         return;
       }
+\Debugbar::info('common transaction count:' . $commonDollarTransactions->count());
 
 
       $commonTransactionTotal=0;
@@ -69,7 +72,7 @@ class PredictAllocations
         $category->actual = $c/$commonTransactionTotal*$this->transaction->value;
         $predictionArray[] = $category;
       }
-
+\Debugbar::error($predictionArray);
 
 return collect($predictionArray);
 

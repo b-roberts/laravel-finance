@@ -313,6 +313,19 @@ $result = [
       return redirect()->route('transaction.show',$transaction->id);
     }
 
+    public function usePrediction(Request $request, $id) {
+      $transaction = \App\Transaction::find($id);
+      $transaction->categories()->detach();
+      $prediction =  dispatch(new \App\Jobs\PredictAllocations($transaction));
+      foreach($prediction as $category)
+      {
+        $transaction->categories()->attach([$category->id=>['value'=>$category->actual,'file_date'=>$transaction->date]]);
+        $transaction->allocation_type=2;
+        $transaction->save();
+      }
+      return redirect()->route('transaction.show',$transaction->id);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

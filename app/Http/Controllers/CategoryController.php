@@ -21,7 +21,9 @@ class CategoryController extends Controller
         $category = \App\Category::find($id);
         $transactions = \App\Transaction::whereHas('categories', function ($query) use ($id) {
             $query->where('category_id', $id);
-        })->orderBy('date')->orderBy('value')->get();
+        })->orderBy('date')->orderBy('value')
+        ->with('categories')
+        ->get();
 
         $allocations = $transactions->map(function ($transaction) use ($id) {
             return $transaction->categories->where('id', $id)->first()->pivot;

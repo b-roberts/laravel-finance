@@ -4,10 +4,10 @@ namespace App\Charts;
 
 class BaseChart extends \ConsoleTVs\Charts\Builder\Multi
 {
-    protected function movingAverage($values)
+    protected function movingAverage($values, $period = 7)
     {
         if (function_exists('trader_kama')) {
-            $averages = trader_kama($values, 7);
+            $averages = trader_kama($values, $period);
             //Fill in array with nulls to keep length the same
             $i = 0;
             if (!$averages) {

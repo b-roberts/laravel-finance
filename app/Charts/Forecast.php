@@ -60,7 +60,7 @@ for ($i=sizeof($averageIncomeData);$i< sizeof($averageExpenseData); $i++){
 
 
         $this
-  ->title('Monthly Cashflow')
+  ->title('Forecast')
   ->dimensions(1250, 750)
   ->responsive(false)
   ->dataset('Expense', $expenses)

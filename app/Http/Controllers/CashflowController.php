@@ -21,8 +21,8 @@ class CashflowController extends Controller
         return view('pages.accounting_periods.cashflow', [
                               'charts' => [
                                 'cashflow' => $chartCashFlow,
-                                'forecast' => $chartForecast,
                                 'netIncome' => $chartNetIncome,
+                                'forecast' => $chartForecast,
                                 'netWorth' => $chartNetWorth,
                               ],
                             ]);

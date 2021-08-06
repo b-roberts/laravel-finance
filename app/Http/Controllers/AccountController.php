@@ -13,7 +13,7 @@ class AccountController extends Controller
      */
     public function index()
     {
-      $accounts = Account::get();
+      $accounts = Account::orderBy('name')->get();
       return view('pages.accounts.index',['accounts'=>$accounts]);
     }
 
@@ -42,6 +42,7 @@ class AccountController extends Controller
       ]);
       $account = new Account;
       $account->fill($request->input());
+      $account->account_number = rand(1, 30000);
       $account->save();
       return back();
     }

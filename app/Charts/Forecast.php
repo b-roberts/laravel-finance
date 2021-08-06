@@ -1,62 +1,54 @@
 <?php
 
 namespace App\Charts;
+use Phpml\Regression\LeastSquares;
 
 class Forecast extends BaseChart
 {
     public function __construct($transactions)
     {
         parent::__construct('line', 'google');
-        $recentTransactions = $transactions->filter(function($item){
+
+
+        $x = [[1], [2], [3], [4], [5], [6]];
+        $y = [1, 3, 5, 6, 8, 10];
+
+
+
+        $nonExceptionalTransactionsByMonth = $transactions->filter(function($item){
           return !$item->exceptional;
-        })->filter(function ($item) {
-            return $item->date > (new \Carbon\Carbon)->subYears(3);
-        });
-        $recentTransactions = $recentTransactions->filter(function ($item) {
-            $dt = \Carbon\Carbon::now();
-            $dt->day=0;
-
-            return $item->date < $dt;
-        });
-
-        $transactionsByMonth = $recentTransactions->groupBy(function ($item, $key) {
+        })->groupBy(function ($item, $key) {
             return date('m-y', strtotime($item['date']));
-        });
-
-
-        $expenses = $transactionsByMonth->map(function ($chunk) {
+        })->map(function ($chunk) {
             return $chunk->where('value', '>', 0)->sum('value');
         })->values()->all();
-        $income = $transactionsByMonth->map(function ($chunk) {
-            return $chunk->where('value', '<', 0)->sum('value')*-1;
-        })->values()->all();
-        $out = trader_kama(trader_tsf($expenses));
-
-        $transactionsByMonth = $transactions->groupBy(function ($item, $key) {
-            return date('m-y', strtotime($item['date']));
-        });
-
-
-                $expenses = $transactionsByMonth->map(function ($chunk) {
-                    return $chunk->where('value', '>', 0)->sum('value');
-                })->values()->all();
-                $income = $transactionsByMonth->map(function ($chunk) {
-                    return $chunk->where('value', '<', 0)->sum('value')*-1;
-                })->values()->all();
+array_pop($nonExceptionalTransactionsByMonth);
 
 
 
-        $expenses = array_merge($expenses, $out);
-        //$income = array_merge($income, $incomeForecast);
+$x = array_map( function($element)
+{
+  return [$element];
+},array_keys($nonExceptionalTransactionsByMonth));
+$y = $nonExceptionalTransactionsByMonth;
 
 
-        $averageExpenseData = $this->movingAverage($expenses);
-$averageIncomeData = $this->movingAverage($income);
+$regression = new LeastSquares();
+$regression->train($x, $y);
 
-for ($i=sizeof($averageIncomeData);$i< sizeof($averageExpenseData); $i++){
-  $averageIncomeData[$i]=0;
+$count = sizeof($nonExceptionalTransactionsByMonth);
+
+$forecast = array_fill(0,$count-1,null);
+$forecast[]=$y[$count-1];
+
+for ($i=$count;$i<$count+6; $i++) {
+  $y[] = null;
+  $forecast[] = $regression->predict([$i]);
 }
 
+
+echo $regression->predict([7]);
+$expenses=$y;
 
 
         $this
@@ -64,11 +56,7 @@ for ($i=sizeof($averageIncomeData);$i< sizeof($averageExpenseData); $i++){
   ->dimensions(1250, 750)
   ->responsive(false)
   ->dataset('Expense', $expenses)
-  ->dataset('averageExpense', $averageExpenseData)
-  //->dataset('Expense2', $expenseForecast)
-  ->dataset('Income2', $averageIncomeData)
-
-
+  ->dataset('$forecast', $forecast)
   ->colors(['#FBE1C8', '#C7D5E3', '#CC444B', '#4CB963'])
   ->labels(array_keys($expenses))
 ;

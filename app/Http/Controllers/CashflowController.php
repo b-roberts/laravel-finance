@@ -17,9 +17,10 @@ class CashflowController extends Controller
         $chartForecast = new \App\Charts\Forecast($transactions);
         $chartNetIncome = new \App\Charts\NetIncome($transactions);
         $chartNetWorth = new \App\Charts\NetWorth();
-
+        $chartAnnotation = new \App\Charts\Annotation();
         return view('pages.accounting_periods.cashflow', [
                               'charts' => [
+                                'annotation'=>$chartAnnotation,
                                 'cashflow' => $chartCashFlow,
                                 'netIncome' => $chartNetIncome,
                                 'forecast' => $chartForecast,

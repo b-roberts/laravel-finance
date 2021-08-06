@@ -21,6 +21,7 @@ class BaseChart extends \ConsoleTVs\Charts\Builder\Multi
         } else {
             $sma = [];
             $position = 0;
+            $range = $period;
             while (empty($values[$position])) {
                 ++$position;
             }

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Transaction;
 use App\Account;
+use App\Parsers\QboParser;
+use App\Parsers\AmCommParser;
+use App\Parsers\OfxParser;
 
 class ImportController extends Controller
 {
@@ -30,44 +33,52 @@ class ImportController extends Controller
         ]);
         $statementFile = $request->file('statement');
         $accountID = $request->input('account_id');
-        $ofxParser = new \OfxParser\Parser();
-        $ofx = $ofxParser->loadFromFile($statementFile);
-        $bankAccount = reset($ofx->bankAccounts);
-        dd($ofx);
+        //if ammcomm
+        switch ($statementFile->getClientOriginalExtension()) {
+            case 'csv':
+            case 'CSV':
+                $parser = new AmCommParser;
+            break;
+            case 'qbo':
+                $parser = new QboParser;
+            break;
+            case 'ofx':
+            case 'OFX':
+                $parser = new OfxParser;
+                break;
+            case 'qfx':
+            case 'QFX':
+                include 'import/qfx.php';
+            break;
+            case 'TXT':
+            case 'txt':
+                include 'import/amcomm_statement.php';
+            break;
+        }
+
+        $transactions = $parser->import($statementFile->getPathname(), 1);
+        //--------------------------------------------------------------------------------------------------------------------------------
         /**
          * @var string Used to group transactions by import batch for easier duplication resolution
          */
         $timestamp = date('Y-m-d H:i:s');
 
-        // Get the statement transactions for the account
-        $transactions = $bankAccount->statement->transactions;
 
         $importCount = 0;
-        foreach ($transactions as $ofxTransaction) {
-            if (0 == Transaction::where('fitid', $ofxTransaction->uniqueId)->count()) {
-                $transaction = new Transaction();
+        foreach ($transactions as $transaction) {
+            if ( $transaction->fitid == null || 0 == Transaction::where('fitid', $transaction->fitid)->count()) {
                 $transaction->account_id = $accountID;
                 $transaction->created_at = $timestamp;
-                $transaction->value = -1 * $ofxTransaction->amount;
-                $transaction->location = $ofxTransaction->name;
-                $transaction->fitid = $ofxTransaction->uniqueId;
-                $transaction->date = $ofxTransaction->date->format('Y-m-d');
+
                 if ($transaction->save()) {
-                  dispatch(new \App\Jobs\RunRules($transaction));
-              /*    $prediction =  dispatch(new \App\Jobs\PredictAllocations($transaction));
-                  foreach($prediction as $category)
-                  {
-                    $transaction->categories()->attach([$category->id=>['value'=>$category->actual,'file_date'=>$transaction->date]]);
-                    $transaction->allocation_type=2;
-                    $transaction->save();
-                  }*/
+                    dispatch(new \App\Jobs\RunRules($transaction));
                     ++$importCount;
                 }
             }
         }
-
-        if (0 == \DB::table('account_balance')->where(['account_id' => $accountID, 'date' => $bankAccount->balanceDate->format('Y-m-d')])->count()) {
-            \DB::table('account_balance')->insert(['account_id' => $accountID, 'date' => $bankAccount->balanceDate->format('Y-m-d'), 'value' => $bankAccount->balance * -1]);
+        foreach($parser->dailyBalances as $date=>$balance)
+        if (0 == \DB::table('account_balance')->where(['account_id' => $accountID, 'date' => $date])->count()) {
+            \DB::table('account_balance')->insert(['account_id' => $accountID, 'date' => $date, 'value' => $balance * -1]);
         }
 
         $existingCount = sizeof($transactions) - $importCount;

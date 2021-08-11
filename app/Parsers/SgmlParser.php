@@ -1,66 +1,11 @@
 <?php
-function import($file,$accountID)
-{
-  global $mysql;
-  $parser = new Parser ();
-  $timestamp = date('Y-m-d H:i:s');
 
-  $doc = $parser->loadFromString ( file_get_contents ( $file ) );
-  /*$doc = new DOMDocument("1.0", "utf-8");
-  $doc->load($file); */
-  $xpath = new DOMXPath ( $doc );
+namespace App\Parsers;
 
-  // We starts from the root element
-  $query = '//STMTTRN';
+use DOMDocument;
+use Exception;
 
-  $entries = $xpath->query ( $query );
-
-  foreach ( $entries as $entry )
-  {
-    $date = $xpath->query ( 'DTPOSTED', $entry )[0]->nodeValue;
-if (!$date)
-{
-  echo 'NO DATE!';
-  break;
-}
-$date = (substr($date,0,14));
-
-    $date = $mysql->real_escape_string ( DateTime::createFromFormat ( 'YmdHis', $date )->format ( 'Y-m-d' ) );
-    $value = $mysql->real_escape_string ( - 1 * $xpath->query ( 'TRNAMT', $entry )[0]->nodeValue );
-
-    if ($xpath->query ( 'MEMO', $entry )->length > 0)
-    {
-      $location = $mysql->real_escape_string ( $xpath->query ( 'MEMO', $entry )[0]->nodeValue );
-    }
-    else
-    {
-      $location = $mysql->real_escape_string ( $xpath->query ( 'NAME', $entry )[0]->nodeValue );
-    }
-
-    $fitid = $mysql->real_escape_string ( $xpath->query ( 'FITID', $entry )[0]->nodeValue );
-    $sql = "SELECT id from transactions where fitid='$fitid'";
-
-    $result = $mysql->query ( $sql );
-    if ($result->num_rows == 0)
-    {
-      $sql = "INSERT INTO transactions (date,location,value,fitid,created_at,account_id) VALUES ('$date','$location','$value','$fitid','$timestamp','$accountID')";
-      $mysql->query ( $sql );
-    }
-    $transactionID = $mysql->insert_id;
-    if ($xpath->query ( 'OPFT.CATEGORIES', $entry )->length > 0)
-    {
-      foreach ( $xpath->query ( 'OPFT.CATEGORIES/OPFT.CATEGORY',$entry ) as $category )
-      {
-        $name = $mysql->real_escape_string ( $xpath->query ( 'NAME', $category )[0]->nodeValue );
-        $sql = "INSERT INTO transaction_detail SELECT null,$transactionID,id,$value,$date FROM categories where name = '$name'";
-
-        $mysql->query($sql);
-      }
-    }
-  }
-
-}
-class Parser
+class SgmlParser
 {
   /**
    * Load an OFX file into this parser by way of a filename

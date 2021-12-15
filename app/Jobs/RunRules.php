@@ -36,9 +36,13 @@ class RunRules
                   $this->transaction->type='transfer';
                 }
                 if ('payment' == $rule->type) {
-                  $this->transaction->categories()->attach($rule->category_id, [
+                    try {
+                        $this->transaction->categories()->attach($rule->category_id, [
                     'value' => $this->transaction->value * $rule->percentage,
-                    'file_date'=>$this->transaction->date] );
+                    'file_date'=>$this->transaction->date]);
+                    } catch (\Illuminate\Database\QueryException $e) {
+                        continue;
+                    }
                 }
                 $this->transaction->allocation_type = 1;
             }

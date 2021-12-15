@@ -61,19 +61,19 @@ class IncomeStatementController extends Controller
             });
 
             $chartSince = (new  Carbon($startDate))->subMonths(6);
-            foreach ($designation->categories->where('actual', '>', 0) as $category) {
-                $id = $category->id;
-                $categoryCharts[$id] = new \App\Charts\CategorySpending($id, 'chartjs', $chartSince, $endDate);
-                $categoryCharts[$id]->view = 'charts.simpleline';
-                unset($categoryCharts[$id]->datasets[1]);
-                $categoryCharts[$id]->colors([$category->color]);
-            }
+            // foreach ($designation->categories->where('actual', '>', 0) as $category) {
+            //     $id = $category->id;
+            //     $categoryCharts[$id] = new \App\Charts\CategorySpending($id, 'chartjs', $chartSince, $endDate);
+            //     $categoryCharts[$id]->view = 'charts.simpleline';
+            //     unset($categoryCharts[$id]->datasets[1]);
+            //     $categoryCharts[$id]->colors([$category->color]);
+            // }
         }
 
         $unallocatedTransactions = TransactionRepository::unallocatedByDate($startDate, $endDate);
 
-        $designationChart = new \App\Charts\DesignationPercentage('google',$startDate,$endDate);
-
+        // $designationChart = new \App\Charts\DesignationPercentage('google',$startDate,$endDate);
+        $designationChart=null;
 
         return view('pages.income_statement', [
           'designationChart'=>$designationChart,

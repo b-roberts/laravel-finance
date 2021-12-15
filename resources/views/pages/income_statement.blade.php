@@ -91,9 +91,17 @@
   </tr>
 </table>
 
-</div>
 <div class="hidden-print">
-@include('modules.date_pager',['startDate'=>$startDate])
+  @include('modules.date_pager',['startDate'=>$startDate])
+  </div>
+  @if($notes->count())
+  <h3>Notes</h3>
+          @foreach($notes as $note)
+            {{$note->body}}
+            <em>{{$note->created_at->format('M d, Y H:i:s')}}</em>
+          @endforeach
+  
+  @endif
 </div>
 @endsection
 {{-- @push('scripts')

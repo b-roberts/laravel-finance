@@ -30,7 +30,7 @@
 
   <td class="{{$transaction->value > 0 ? 'expense' : 'income' }}">{{$transaction->value}}</td>
 <td>
-{{($transaction->note) ? $transaction->note->description : ''}}
+{{($transaction->note) ? $transaction->note->body : ''}}
 </td>
 <td>
 @foreach($transaction->categories as $category)
@@ -46,7 +46,7 @@
       ...
     </button>
     <div class="dropdown-menu">
-      <a class="dropdown-item" href="{{route('payee',$transaction->payee_id)}}">See All {{$transaction->location}}</a>
+      {{-- <a class="dropdown-item" href="{{route('payee',['payee'=>$transaction->payee_id])}}">See All {{$transaction->location}}</a> --}}
 <a class="dropdown-item" href="#" onclick=" if (confirm('Are you sure you want to delete this transaction?'))
   {
     $.ajax({ url:'{{route('transaction.destroy', $transaction->id)}}',

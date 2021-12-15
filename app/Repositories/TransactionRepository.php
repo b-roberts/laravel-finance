@@ -13,13 +13,14 @@ class TransactionRepository
           ->where('date', '<', $endDate->toDateString())
           ->orderBy('date')
           ->orderBy('value')
+          ->with('note')
           ->get();
         return $transactions;
     }
 
     public static function payments()
     {
-        $transactions = Transaction::orderBy('date')->orderBy('value')->where('type', 'payment')->get();
+        $transactions = Transaction::orderBy('date')->orderBy('value')->where('type', 'payment')->with('note')->get();
         return $transactions;
     }
 
@@ -27,6 +28,7 @@ class TransactionRepository
     {
         $transactions = Transaction::with('categories')
         ->with('account')
+        ->with('note')
         ->where('date', '>=', $startDate->toDateString())
         ->where('date', '<=', $endDate->toDateString())
         ->where('type', 'payment')
@@ -40,6 +42,7 @@ class TransactionRepository
     {
         return \App\Transaction::with('categories')
         ->with('account')
+        ->with('note')
         ->where('date', '>', $startDate->toDateString())
         ->where('date', '<', $endDate->toDateString())
         ->where('type', 'payment')

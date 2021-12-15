@@ -29,10 +29,14 @@
 
       {!! Form::model($transaction, ['route' => ['transaction.update', $transaction->id]]) !!}
       {{ method_field('PUT') }}
-        {!!Form::label('description', 'Note') !!}
-        {!! Form::text('note[description]'); !!}
-
+      <div class="form-group">
+        {!!Form::label('note[body]', 'Note') !!}
+        {!! Form::textarea('note[body]', null, ['class'=>'form-control', 'rows'=>3]); !!}
+      </div>
+      <div class="form-group">
+        {!!Form::label('type', 'Type') !!}
         {!! Form::select('type', ['payment'=>'Payment','transfer'=>'Transfer'],null,['class'=>'form-control']) !!}
+        </div>
         <div class="control-group">
 
             <div class="controls" id="fields">

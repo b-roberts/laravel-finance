@@ -30,7 +30,7 @@ class Transaction extends Model
 
     public function note()
     {
-        return $this->hasOne('App\Note');
+        return $this->morphOne(Note::class, 'related');
     }
     public function payee()
     {

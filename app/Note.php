@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Note extends Model
 {
-    protected $table = 'transaction_notes';
-    protected $primaryKey = 'transaction_id';
+    protected $table = 'notes';
+    protected $primaryKey = 'id';
+    public const UPDATED_AT = null;
+    protected $fillable = [
+        'body'
+    ];
 }

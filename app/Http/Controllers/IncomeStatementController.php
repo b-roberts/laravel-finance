@@ -24,6 +24,8 @@ class IncomeStatementController extends Controller
         //Load all transactions in the period
         $transactions=TransactionRepository::paymentsByDate($startDate, $endDate);
 
+        $notes = \App\Note::where('related_type', 'period')->where('related_id', $startDate->format('Y-m-d'))->get();
+
         $incomeTransactions = $transactions->filter(function ($item, $key) {
             return $item->value < 0;
         });
@@ -81,6 +83,7 @@ class IncomeStatementController extends Controller
           'designations' => $designations,
           'startDate' => $startDate,
           'charts' => $categoryCharts,
+          'notes' => $notes,
         ]);
     }
 
@@ -99,10 +102,9 @@ class IncomeStatementController extends Controller
         $expenses = collect();
         $incomes = collect();
         for ($i=0; $i < 12; $i++) {
-            //$months[$i] = collect();
-           // $months[$i]['start'] = $periodStart;
             $periodStart = $startDate->copy()->addMonth($i);
             $periodEnd = $periodStart->copy()->addMonth();
+            $notes[$i] = \App\Note::where('related_type', 'period')->where('related_id', $periodStart->format('Y-m-d'))->get();
             $expenses[$i] = collect();
             //Load all transactions in the period
             $incomes[$i] = \App\Transaction::with('categories')
@@ -145,7 +147,8 @@ class IncomeStatementController extends Controller
         'designations' => $designations,
         'accounts' => $accounts,
         'expenses' => $expenses,
-        'incomes' => $incomes
+        'incomes' => $incomes,
+        'notes' => $notes,
         ]);
 
 

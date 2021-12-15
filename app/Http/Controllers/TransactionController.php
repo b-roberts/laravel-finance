@@ -224,7 +224,7 @@ class TransactionController extends Controller
      */
     public function show($id)
     {
-        $transaction = \App\Transaction::find($id);
+        $transaction = \App\Transaction::with('note')->find($id);
         $categories = \App\Category::all()->sortBy('name');
         $prediction =  dispatch(new \App\Jobs\PredictAllocations($transaction));
         return view('pages.transactions.show', [
@@ -255,7 +255,19 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $transaction = \App\Transaction::find($id);
+        $transaction = \App\Transaction::with('note')->find($id);
+
+
+        if($transaction->note) {
+            $transaction->note->body = $request->get('note')['body'];
+            $transaction->note->save();
+        }
+        elseif ($request->get('note')['body']!= '')
+        {
+            $transaction->note()->create(['body'=>$request->get('note')['body']]);
+        }
+
+
         $transaction->categories()->detach();
         if ($request->category) {
             foreach ($request->category as $index => $categoryID) {

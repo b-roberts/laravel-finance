@@ -10,6 +10,11 @@
       <a href="{{route('income-statement',[$startDate->copy()->addMonth($i)->format('Y-m-d')])}}">
         {{ $startDate->copy()->addMonth($i)->format('M Y')}}
       </a>
+      @if($notes[$i]->count())
+      <button class="btn btn-link"  data-toggle="modal" data-target="#notes-{{$i}}">
+        <i class="fa fa-info-circle"></i>
+      </button>
+      @endif
     </td>
     @endfor
     </tr>
@@ -91,5 +96,26 @@
   </tr>
 </table>
 
+@for($i=0; $i < 12; $i++)
+  @if($notes[$i]->count())
+  <div class="modal fade" id="notes-{{$i}}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          @foreach($notes[$i] as $note)
+            {{$note->body}}
+            <em>{{$note->created_at->format('M d, Y H:i:s')}}</em>
+          @endforeach
+        </div>
+      </div>
+    </div>
+  </div>
+  @endif
+@endfor
 
 @endsection

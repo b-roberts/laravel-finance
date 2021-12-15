@@ -1,1 +1,1 @@
-<span class="badge" style="background-color:{{$category->color}};color:{{$category->alt_color}}">{{$category->name}}</span>
+<span class="badge" style="background-color:{{$category->color}};color:{{$category->color == 0 ?  'white' : 'black'}}">{{$category->name}}</span>

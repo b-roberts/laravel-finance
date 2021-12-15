@@ -5,6 +5,7 @@
     <div style="height:2em;">
     <div id="q"></div>
   </div>
+    <div id="ais-account"></div>
     <div id="ais-category"></div>
     <div id="ais-payee"></div>
     <div id="ais-direction"></div>
@@ -132,6 +133,16 @@ search.addWidget(
     }
   })
 );
+
+search.addWidget(instantsearch.widgets.refinementList({
+  container: '#ais-account',
+  attributeName: 'account',
+  autoHideContiner: false,
+  collapsible:false,
+  templates: {
+    header: '<p class="ais-header">Account</p>'
+  },
+}));
 
  search.addWidget(instantsearch.widgets.refinementList({
   container: '#ais-category',

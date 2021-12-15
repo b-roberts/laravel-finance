@@ -1,7 +1,7 @@
 @extends('templates.narrow')
 @section('content')
 <h1>My Rules</h1>
-
+<a href="{{route('rule.create')}}" class="btn btn-primary">Add New Rule</a>
 <table class="table table-striped">
 
 @foreach($rules as $rule)

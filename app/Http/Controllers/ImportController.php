@@ -8,6 +8,8 @@ use App\Account;
 use App\Parsers\QboParser;
 use App\Parsers\AmCommParser;
 use App\Parsers\OfxParser;
+use App\Parsers\QfxParser;
+
 
 class ImportController extends Controller
 {
@@ -48,7 +50,8 @@ class ImportController extends Controller
                 break;
             case 'qfx':
             case 'QFX':
-                include 'import/qfx.php';
+                $parser = new QfxParser;
+                break;
             break;
             case 'TXT':
             case 'txt':
@@ -71,7 +74,9 @@ class ImportController extends Controller
                 $transaction->created_at = $timestamp;
 
                 if ($transaction->save()) {
-                    dispatch(new \App\Jobs\RunRules($transaction));
+                    if ($transaction->categories()->count() == 0) {
+                        dispatch(new \App\Jobs\RunRules($transaction));
+                    }
                     ++$importCount;
                 }
             }

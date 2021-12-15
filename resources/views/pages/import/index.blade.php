@@ -5,6 +5,9 @@
     Import
   </h1>
   {!! Form::open(['action' => 'ImportController@store', 'files' => true]) !!}
+  <div class="alert alert-info">
+    <p>Amcom SUCKS. use QFX for amcom, and no one else.</p>
+  </div>
     <div class="form-group">
       <label for="sel-account">Account:</label>
       <select name="account_id"  class="form-control" id="sel-account">

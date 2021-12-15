@@ -49,4 +49,13 @@ class SearchController
         
         return $directions;
     }
+    public function unallocated()
+    {
+        $directions =[];
+        
+        $directions['true']=\App\Transaction::whereDoesntHave('categories')->count();
+        $directions['false']=\App\Transaction::whereHas('categories')->count();
+        
+        return $directions;
+    }
 }

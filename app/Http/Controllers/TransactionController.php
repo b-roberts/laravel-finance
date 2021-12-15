@@ -62,6 +62,9 @@ class TransactionController extends Controller
                     $query->where('name', $value);
                 });
             }
+            if ($facet == 'unallocated') {
+                $tq->whereDoesntHave('categories');
+            }
             if ($facet == 'payee') {
                 if ($value =='UNKNOWN') {
                     $tq->doesnthave('payee');
@@ -148,6 +151,7 @@ class TransactionController extends Controller
         'account'=>$sc->accounts(),
         'method' =>$sc->methods(),
         'direction'=>$sc->directions(),
+        'unallocated' => $sc->unallocated(),
         'amount'=>$transactions->groupBy('value')->map(function($t) { return $t->count(); }),
         ],
         'facets_stats'=>[

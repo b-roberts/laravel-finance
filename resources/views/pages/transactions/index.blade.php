@@ -5,6 +5,7 @@
     <div style="height:2em;">
     <div id="q"></div>
   </div>
+    <div id="ais-allocated"></div>
     <div id="ais-account"></div>
     <div id="ais-amount"></div>
     <div id="ais-category"></div>
@@ -103,7 +104,7 @@ var search = instantsearch({
 search.addWidget(
   instantsearch.widgets.searchBox({
     container: '#q',
-    placeholder: 'Search for products',
+    placeholder: 'Search',
     autofocus: false,
     poweredBy: true,
     reset: true,
@@ -176,6 +177,17 @@ search.addWidget(instantsearch.widgets.refinementList({
    header: '<p class="ais-header">Method</p>'
  },
 }));
+
+search.addWidget(
+  instantsearch.widgets.toggle({
+        container: '#ais-allocated',
+        attributeName: 'unallocated',
+        templates: {
+        header: '<p class="ais-header"></p>',
+        },
+        label: 'Unallocated Only'
+      })
+);
 
   search.addWidget(
     instantsearch.widgets.rangeSlider({

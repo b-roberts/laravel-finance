@@ -6,6 +6,7 @@
     <div id="q"></div>
   </div>
     <div id="ais-account"></div>
+    <div id="ais-amount"></div>
     <div id="ais-category"></div>
     <div id="ais-payee"></div>
     <div id="ais-direction"></div>
@@ -177,6 +178,22 @@ search.addWidget(instantsearch.widgets.refinementList({
  },
 }));
 
+  search.addWidget(
+    instantsearch.widgets.rangeSlider({
+      container: '#ais-amount',
+      attributeName: 'amount',
+      templates: {
+        header: '<p class="ais-header">Value</p>',
+      },
+      collapsible: true,
+      tooltips: {
+        format: function (rawValue) {
+          return '$' + Math.round(rawValue)
+            .toLocaleString();
+        }
+      }
+    })
+  );
 
 
 const makeRangeWidget = instantsearch.connectors.connectRange(

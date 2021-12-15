@@ -31,25 +31,8 @@ class TransactionController extends Controller
     {
         $queryTerm = $request->get('requests')[0]['params']['query'];
 
-        $categories =[];
-        foreach (\App\Category::withCount('transactions')->get() as $category) {
-            $categories[$category->name]=$category->transactions_count;
-        }
 
-        $payees =[];
-        $payees['UNKNOWN']=\App\Transaction::doesnthave('payee')->count();
-        foreach (\App\Payee::withCount('transactions')->get() as $payee) {
-            $payees[$payee->name]=$payee->transactions_count;
-        }
-        $accounts =[];
-        foreach (\App\Account::withCount('transactions')->get() as $account) {
-            $accounts[$account->name]=$account->transactions_count;
-        }
 
-        $methods =[];
-        foreach (['manual','regex','Learned'] as $id => $method) {
-            $methods[$method]=\App\Transaction::where('allocation_type', $id)->count();
-        }
 
         $facetFilters=[];
         $numericFilters=[];
@@ -107,9 +90,6 @@ class TransactionController extends Controller
                 }
             }
             if ($facet == 'direction') {
-                $tq->where('value', '<', 0);
-            }
-            if ($facet == 'direction') {
                 if ($value=='credit') {
                     $tq->where('value', '<', 0);
                 }
@@ -141,12 +121,17 @@ class TransactionController extends Controller
         $hitsPerPage = 500;
         $curPage = $request->get('requests')[0]['params']['page'];
 
+        
+
 
         $sql = $tq->toSql();
-        $hits = $tq
+        $transactions = $tq
         ->take($hitsPerPage)
         ->skip($curPage * $hitsPerPage)
-        ->get()->map(function ($e) {
+        ->get();
+        
+        
+        $hits = $transactions->transform(function ($e) {
             $e->objectId=$e->id;
             $e->label = ($e->payee) ?"◖" .  $e->payee->name : $e->location;
             $e->accountName = ($e->account) ? $e->account->name : '[UNKNOWN]';
@@ -154,18 +139,23 @@ class TransactionController extends Controller
             return $e;
         });
 
+
+        $sc = new \App\Repositories\SearchController();
         $result = [
         'facets'=>[
-        'category'=>$categories,
-        'payee'=>$payees,
-        'account'=>$accounts,
-        'method' =>$methods,
-        'direction'=>['credit'=>1000,'debit'=>1000],
-        'amount'=>[50=>4,40=>3]
+        'category'=>$sc->getCategoryStats(),
+        'payee'=>$sc->payees(),
+        'account'=>$sc->accounts(),
+        'method' =>$sc->methods(),
+        'direction'=>$sc->directions(),
+        'amount'=>$transactions->groupBy('value')->map(function($t) { return $t->count(); }),
         ],
         'facets_stats'=>[
         'amount'=>[
-        'avg'=>38,'max'=>1000,'min'=>0,'sum'=>39
+        'avg'=>(float)number_format(\App\Transaction::pluck('value')->average(),2,'.',''),
+        'max'=>(float)number_format(\App\Transaction::pluck('value')->max(),2,'.',''),
+        'min'=>(float)number_format(\App\Transaction::pluck('value')->min(),2,'.',''),
+        'sum'=>(float)number_format(\App\Transaction::pluck('value')->sum(),2,'.',''),
         ]
         ]
         ,
@@ -181,37 +171,12 @@ class TransactionController extends Controller
         'exhaustiveNbHits'=>false,
 
         'hits'=>$hits];
-
         $response = [];
-        for ($i=0; $i<sizeof($request->get('requests')); $i++) {
+
+        for ($i=0; $i<sizeof($request->get('requests',[0])); $i++) {
             $response[]=$result;
         }
         return ['results'=>$response];
-
-        return  (['results'=>[
-
-        [
-          'facets'=>[
-            'category'=>$categories,
-            'method'=>$methods,
-            'payee'=>$payees,
-            'amount'=>[50=>4,40=>3]
-          ],
-          'hitsPerPage'=>10,
-          'index'=>'x',
-          'nbHits'=>20,
-          'nbPages'=>40,
-          'page'=>0,
-          'params'=>'',
-          'processingTime'=>0,
-          'query'=>$sql,
-          'exhaustiveFacetsCount'=>true,
-          'exhaustiveNbHits'=>false,
-
-          'hits'=>$hits]
-
-
-        ]]);
     }
 
     public function search($query)

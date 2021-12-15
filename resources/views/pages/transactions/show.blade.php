@@ -101,13 +101,13 @@
       {!! Form::close() !!}
     </div>
     <div class="col-md-6">
-      @include('charts.budget-pie-graph',['categories'=>$transaction->categories])
+      include('charts.budget-pie-graph',['categories'=>$transaction->categories])
       <h2>Prediction</h2>
       {!! Form::model($transaction, ['route' => ['transaction.usePrediction', $transaction->id]]) !!}
       {{ method_field('POST') }}
       <button type="submit" class="btn btn-primary">Use Prediction</button>
       {!! Form::close() !!}
-      @include('charts.budget-pie-graph',['categories'=>$prediction])
+      include('charts.budget-pie-graph',['categories'=>$prediction])
 
     </div>
   </div>

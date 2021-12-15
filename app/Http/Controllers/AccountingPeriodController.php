@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Charts;
+// use Charts;
 use Carbon\Carbon;
 use \App\Repositories\TransactionRepository;
 
@@ -38,16 +38,16 @@ class AccountingPeriodController extends Controller
             return $item->value > 0;
         });
 
-        $chartSpendingByDay = Charts::create('line', 'google')
-          ->title('Spending By Day')
-          ->elementLabel('Total')
-          ->dimensions(1000, 250)
-          ->responsive(false)
-          ->values($transactionsByDay->map(function ($chunk) {
-              return $chunk->where('value', '>', 0)->sum('value');
-          })->values()->all())
-          ->labels($transactionsByDay->keys())
-        ;
+        // $chartSpendingByDay = Charts::create('line', 'google')
+        //   ->title('Spending By Day')
+        //   ->elementLabel('Total')
+        //   ->dimensions(1000, 250)
+        //   ->responsive(false)
+        //   ->values($transactionsByDay->map(function ($chunk) {
+        //       return $chunk->where('value', '>', 0)->sum('value');
+        //   })->values()->all())
+        //   ->labels($transactionsByDay->keys())
+        // ;
 
         $categories->map(function ($y) {
             $y->expected = 0;
@@ -63,15 +63,15 @@ class AccountingPeriodController extends Controller
             return $y->expected - $y->actual;
         });
 
-        $categoryBalance = Charts::create('bar', 'google')
-          ->title('Category Balance')
-          ->elementLabel('Balance')
-          ->dimensions(1000, 250)
-          ->responsive(false)
-          ->colors($categories->pluck('color')->values())
-          ->values($balance->values())
-          ->labels($categories->pluck('name')->values())
-        ;
+        // $categoryBalance = Charts::create('bar', 'google')
+        //   ->title('Category Balance')
+        //   ->elementLabel('Balance')
+        //   ->dimensions(1000, 250)
+        //   ->responsive(false)
+        //   ->colors($categories->pluck('color')->values())
+        //   ->values($balance->values())
+        //   ->labels($categories->pluck('name')->values())
+        // ;
 
 
 
@@ -81,42 +81,42 @@ class AccountingPeriodController extends Controller
             $spendPercentage = $expenseTransactions->sum('value') / $incomeTransactions->sum('value') * -100;
         }
 
-        $spendPercentage = Charts::create('progressbar', 'progressbarjs')
-           ->title(round($spendPercentage, 2).' Percent of Income Spent')
-           ->elementLabel('')
-           ->values([$spendPercentage, 0, 100])
-           ->responsive(false)
-           ->height(30)
-           ->width(0);
+        // $spendPercentage = Charts::create('progressbar', 'progressbarjs')
+        //    ->title(round($spendPercentage, 2).' Percent of Income Spent')
+        //    ->elementLabel('')
+        //    ->values([$spendPercentage, 0, 100])
+        //    ->responsive(false)
+        //    ->height(30)
+        //    ->width(0);
 
            $expectedExpensePercentage=0;
            if($categories->sum('expected') > 0)
            {
              $expectedExpensePercentage = $expenseTransactions->sum('value') / $categories->sum('expected') * 100;
            }
-        $expectedExpensePercentage = Charts::create('progressbar', 'progressbarjs')
-              ->title(round($expectedExpensePercentage, 2).' Percent of Budget Spent')
-              ->elementLabel('')
-              ->values([$expectedExpensePercentage, 0, 100])
-              ->responsive(false)
-              ->height(30)
-              ->width(0);
+        // $expectedExpensePercentage = Charts::create('progressbar', 'progressbarjs')
+        //       ->title(round($expectedExpensePercentage, 2).' Percent of Budget Spent')
+        //       ->elementLabel('')
+        //       ->values([$expectedExpensePercentage, 0, 100])
+        //       ->responsive(false)
+        //       ->height(30)
+        //       ->width(0);
 
         $expectedIncomePercentage = 0;//$incomeTransactions->sum('value') / $categories->first()->budgets->first()->monthly_income * -100;
-        $expectedIncomePercentage = Charts::create('progressbar', 'progressbarjs')
-                    ->title(round($expectedIncomePercentage, 2).' Percent of Income Received')
-                    ->elementLabel('')
-                    ->values([$expectedIncomePercentage, 0, 100])
-                    ->responsive(false)
-                    ->height(30)
-                    ->width(0);
+        // $expectedIncomePercentage = Charts::create('progressbar', 'progressbarjs')
+        //             ->title(round($expectedIncomePercentage, 2).' Percent of Income Received')
+        //             ->elementLabel('')
+        //             ->values([$expectedIncomePercentage, 0, 100])
+        //             ->responsive(false)
+        //             ->height(30)
+        //             ->width(0);
 
         return view('pages.accounting_periods.index', [
           'transactions' => $transactions,
           'startDate' => $startDate,
           'charts' => [
-            'spendingByDay' => $chartSpendingByDay,
-            'categoryBalance' => $categoryBalance,
+           // 'spendingByDay' => $chartSpendingByDay,
+           // 'categoryBalance' => $categoryBalance,
         //    'categoryBreakdown' => $categoryBreakdown,
             'spendPercentage' => $spendPercentage,
             'expectedExpensePercentage' => $expectedExpensePercentage,

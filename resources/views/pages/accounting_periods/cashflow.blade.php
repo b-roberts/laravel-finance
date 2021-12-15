@@ -6,7 +6,7 @@
     </div>
     
     @foreach($charts as $chart)
-        {!! $chart->html() !!}
+        {{-- {!! $chart->html() !!} --}}
   @endforeach
 </div>
 
@@ -16,6 +16,6 @@
 @endsection
 @push('scripts')
   @foreach($charts as $chart)
-    {!! $chart->script() !!}
+    {{-- {!! $chart->script() !!} --}}
   @endforeach
 @endpush

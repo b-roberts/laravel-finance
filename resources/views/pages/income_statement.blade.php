@@ -24,7 +24,7 @@
   </style>
   <div class="container">
 @include('modules.date_pager',['startDate'=>$startDate])
-{!! $designationChart->html() !!}
+{{-- {!! $designationChart->html() !!} --}}
 <table class="table table-stripped">
   <tr>
     <th colspan="3">Income</th>
@@ -59,7 +59,7 @@
   @foreach($categories->sortByDesc('actual') as $category)
     <tr class="hidden-parint">
       <td>{{$category->name}}</td>
-      <td><div class="hidden-print d-print-none">{!!  isset($charts[$category->id]) ?$charts[$category->id]->html() :''!!}</div></td>
+      {{-- <td><div class="hidden-print d-print-none">{!!  isset($charts[$category->id]) ?$charts[$category->id]->html() :''!!}</div></td> --}}
       <td class="expense"> <i class=" {{ $category->changeIcon}}" title="({{sprintf('%01.2f',$category->previous)}})"></i> ({{sprintf('%01.2f',$category->actual)}})</td>
     </tr>
   @endforeach
@@ -96,9 +96,9 @@
 @include('modules.date_pager',['startDate'=>$startDate])
 </div>
 @endsection
-@push('scripts')
+{{-- @push('scripts')
   @foreach($charts as $chart)
     {!! $chart->script() !!}
   @endforeach
   {!! $designationChart->script() !!}
-@endpush
+@endpush --}}

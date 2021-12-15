@@ -10,6 +10,7 @@ class CashflowController extends Controller
 {
     public function cashflow()
     {
+      abort('501', 'Charts Not Implemented');
         //Load all transactions and group them by month
         $transactions =TransactionRepository::payments();
 

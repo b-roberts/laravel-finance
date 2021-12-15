@@ -10,7 +10,7 @@
   <td>{{$account->description}}</td>
   <td><a href="{{route('account.edit',$account->id)}}" class="btn btn-secondary">Edit</a></td>
   <td>
-      @include('charts.account_chart',['account'=>$account])
+      {{-- @include('charts.account_chart',['account'=>$account]) --}}
   </td>
   <td>
     {!! Form::model($account,['route'=>['account.update',$account->id],'method'=>'put']) !!}<form action="{{route('account.update',$account->id)}}">

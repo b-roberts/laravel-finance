@@ -2,7 +2,7 @@
 @section('content')
   <div class="container">
 @include('modules.date_pager',['startDate'=>$startDate])
-  <div class="row">
+  {{-- <div class="row">
     <div class="col-4">
       {!! $charts['spendPercentage']->html() !!}
       {!! $charts['expectedExpensePercentage']->html() !!}
@@ -10,11 +10,11 @@
 
     </div>
     <div class="col-8">
-      @include('charts.categoryBreakdown')
+      {{-- @include('charts.categoryBreakdown') --}}
 
     </div>
-  </div>
-    <div class="row">
+  </div> --}}
+    {{-- <div class="row">
       <div class="col">
         {!! $charts['categoryBalance']->html() !!}
       </div>
@@ -23,15 +23,15 @@
       <div class="col">
         {!! $charts['spendingByDay']->html() !!}
       </div>
-    </div>
+    </div> --}}
 @include('modules.date_pager',['startDate'=>$startDate])
     @include('modules.transactions_table')
 @include('modules.date_pager',['startDate'=>$startDate])
 </div>
 
 @endsection
-@push('scripts')
+{{-- @push('scripts')
   @foreach($charts as $chart)
     {!! $chart->script() !!}
   @endforeach
-@endpush
+@endpush --}}

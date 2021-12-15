@@ -35,6 +35,6 @@ class Category extends Model
     }
     public function designation()
     {
-      return $this->belongsTo('App\Designation');
+        return $this->belongsTo('App\Designation');
     }
 }

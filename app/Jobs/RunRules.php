@@ -33,13 +33,13 @@ class RunRules
                 }
                 //Check Transaction type
                 if ('transfer' == $rule->type) {
-                  $this->transaction->type='transfer';
+                    $this->transaction->type='transfer';
                 }
                 if ('payment' == $rule->type) {
                     try {
                         $this->transaction->categories()->attach($rule->category_id, [
-                    'value' => $this->transaction->value * $rule->percentage,
-                    'file_date'=>$this->transaction->date]);
+                        'value' => $this->transaction->value * $rule->percentage,
+                        'file_date'=>$this->transaction->date]);
                     } catch (\Illuminate\Database\QueryException $e) {
                         continue;
                     }

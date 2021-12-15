@@ -16,7 +16,7 @@ class RuleController extends Controller
     {
         //
         $rules = \App\Rule::orderBy('match')->with('category')->get();
-        return view('pages.rule.index',['rules'=>$rules]);
+        return view('pages.rule.index', ['rules'=>$rules]);
     }
 
     /**
@@ -27,8 +27,10 @@ class RuleController extends Controller
     public function create()
     {
         //
-        $categories = \App\Category::orderBy('name')->get()->keyBy('id')->map(function($element){ return $element->name;});
-        return view('pages.rule.create',['categories'=>$categories]);
+        $categories = \App\Category::orderBy('name')->get()->keyBy('id')->map(function ($element) {
+            return $element->name;
+        });
+        return view('pages.rule.create', ['categories'=>$categories]);
     }
 
     /**
@@ -43,10 +45,9 @@ class RuleController extends Controller
         $rule = new \App\Rule;
         $rule->fill($request->all());
         $rule->save();
-        $transactions = \App\Transaction::doesntHave('categories')->where('value','>',0)->get();
-        foreach($transactions as $transaction)
-        {
-          dispatch(new \App\Jobs\RunRules($transaction));
+        $transactions = \App\Transaction::doesntHave('categories')->where('value', '>', 0)->get();
+        foreach ($transactions as $transaction) {
+            dispatch(new \App\Jobs\RunRules($transaction));
         }
         return redirect(route('rule.index'));
     }

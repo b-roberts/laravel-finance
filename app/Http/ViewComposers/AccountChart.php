@@ -20,6 +20,6 @@ class AccountChart
         $chart->colors(['#424546']);
         $chart->dimensions(200, 100);
         array_shift($chart->datasets);
-        $view->with('chart', $chart)->with('account',$view->account);
+        $view->with('chart', $chart)->with('account', $view->account);
     }
 }

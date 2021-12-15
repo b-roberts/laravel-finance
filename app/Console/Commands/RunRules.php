@@ -38,10 +38,9 @@ class RunRules extends Command
     public function handle()
     {
         //
-        $transactions = \App\Transaction::doesntHave('categories')->orderBy('id','desc')->get();
-        foreach($transactions as $transaction)
-        {
-          dispatch(new \App\Jobs\RunRules($transaction));
+        $transactions = \App\Transaction::doesntHave('categories')->orderBy('id', 'desc')->get();
+        foreach ($transactions as $transaction) {
+            dispatch(new \App\Jobs\RunRules($transaction));
         }
     }
 }

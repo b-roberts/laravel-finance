@@ -12,9 +12,8 @@ class Account extends BaseChart
         ->where('account_id', $accountID)
         ->select(['date',\DB::raw('sum(value) value')])->get();
         $netData = $reportedBalances->pluck('value')->all();
-        if(!sizeof($netData))
-        {
-            $this->dataset('NO DATA',[0])
+        if (!sizeof($netData)) {
+            $this->dataset('NO DATA', [0])
             ->labels([0]);
             return;
         }

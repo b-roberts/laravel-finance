@@ -31,8 +31,7 @@ class CalculateAccountBalance
         \DB::table('account_balance')->where('account_id', $accountID)->where('calculated', 1)->delete();
 
         $reportedBalances=\DB::table('account_balance')->where('account_id', $accountID)->where('calculated', 0)->orderBy('date')->get();
-        if($reportedBalances->count()==0)
-        {
+        if ($reportedBalances->count()==0) {
             return;
         }
         $balance = $reportedBalances->first()->value;
@@ -44,7 +43,7 @@ class CalculateAccountBalance
           ->where('date', '>', $date)
           ->select(['value','date'])
           ->get()->groupBy('date');
-        foreach ($transactionsByDate as $date =>$transactions) {
+        foreach ($transactionsByDate as $date => $transactions) {
             $balance-=$transactions->sum('value');
 
             if ($reportedBalances->where('date', $date)->count()) {
@@ -82,7 +81,5 @@ class CalculateAccountBalance
 
             $date->addDay();
         }
-
-
     }
 }

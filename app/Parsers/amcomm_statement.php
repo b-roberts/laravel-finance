@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 class AmcommStatement
 {
-	public $transactions;
+    public $transactions;
 
-	public function __construct()
-	{
+    public function __construct()
+    {
         $this->transactions = new Collection();
-	}
+    }
 
     public function import($file, $accountID)
     {
@@ -42,16 +42,15 @@ class AmcommStatement
     
             $start =  ftell($fp);
 
-			$transaction = new Transaction([
-				'date' => $date,
-				'location' => $location,
-				'value' => $value,
-				'fitid' => null,
-				'created_at' => $timestamp,
-			]);
+            $transaction = new Transaction([
+                'date' => $date,
+                'location' => $location,
+                'value' => $value,
+                'fitid' => null,
+                'created_at' => $timestamp,
+            ]);
 
             $this->transactions->push($transaction);
-
         }
         fclose($fp);
         return $this->transactions;

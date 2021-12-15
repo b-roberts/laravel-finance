@@ -21,7 +21,7 @@ class AccountingPeriodController extends Controller
         //Load all transactions in the period
 
         $transactions = TransactionRepository::byDate($startDate, $endDate);
-        $categories = \App\Category::with(['transactions' => function ($query) use ($startDate,$endDate) {
+        $categories = \App\Category::with(['transactions' => function ($query) use ($startDate, $endDate) {
             $query->where('date', '>', $startDate->toDateString())->where('date', '<', $endDate->toDateString());
         }, 'budgets' => function ($query) {
             $query->where('id', 4);
@@ -90,10 +90,9 @@ class AccountingPeriodController extends Controller
         //    ->width(0);
 
            $expectedExpensePercentage=0;
-           if($categories->sum('expected') > 0)
-           {
-             $expectedExpensePercentage = $expenseTransactions->sum('value') / $categories->sum('expected') * 100;
-           }
+        if ($categories->sum('expected') > 0) {
+            $expectedExpensePercentage = $expenseTransactions->sum('value') / $categories->sum('expected') * 100;
+        }
         // $expectedExpensePercentage = Charts::create('progressbar', 'progressbarjs')
         //       ->title(round($expectedExpensePercentage, 2).' Percent of Budget Spent')
         //       ->elementLabel('')

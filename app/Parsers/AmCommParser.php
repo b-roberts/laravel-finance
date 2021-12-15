@@ -40,15 +40,14 @@ class AmCommParser
 
             $transaction = new Transaction();
             $transaction->forceFill([
-				'date' => $date,
-				'location' => $location,
-				'value' => $value,
-				'fitid' => null,
-				'created_at' => $timestamp,
-			]);
+                'date' => $date,
+                'location' => $location,
+                'value' => $value,
+                'fitid' => null,
+                'created_at' => $timestamp,
+            ]);
             $this->transactions->push($transaction);
         }
         return $this->transactions;
     }
-   
 }

@@ -42,9 +42,5 @@ class FetchStockData extends Command
         $stocks = \App\StockPrice::query()->select('ticker')->distinct()->get()->map(function ($stock) {
             dispatch(new \App\Jobs\FetchStockData($stock->ticker));
         });
-
-
-
-
     }
 }

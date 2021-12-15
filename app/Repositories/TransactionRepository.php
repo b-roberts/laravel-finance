@@ -17,35 +17,36 @@ class TransactionRepository
         return $transactions;
     }
 
-    public static function payments(){
-      $transactions = Transaction::orderBy('date')->orderBy('value')->where('type','payment')->get();
-      return $transactions;
+    public static function payments()
+    {
+        $transactions = Transaction::orderBy('date')->orderBy('value')->where('type', 'payment')->get();
+        return $transactions;
     }
 
     public static function paymentsByDate(Carbon $startDate, Carbon $endDate)
     {
-      $transactions = Transaction::with('categories')->
-      with('account')->
-      where('date', '>=', $startDate->toDateString())->
-      where('date', '<=', $endDate->toDateString())->
-      where('type', 'payment')->
-      orderBy('date')->
-      orderBy('value')->
-      get();
-      return $transactions;
+        $transactions = Transaction::with('categories')
+        ->with('account')
+        ->where('date', '>=', $startDate->toDateString())
+        ->where('date', '<=', $endDate->toDateString())
+        ->where('type', 'payment')
+        ->orderBy('date')
+        ->orderBy('value')
+        ->get();
+        return $transactions;
     }
 
     public static function unallocatedByDate(Carbon $startDate, Carbon $endDate)
     {
-      return \App\Transaction::with('categories')->
-      with('account')->
-      where('date', '>', $startDate->toDateString())->
-      where('date', '<', $endDate->toDateString())->
-      where('type', 'payment')->
-      where('value','>',0)->
-      orderBy('date')->
-      orderBy('value')->
-      doesntHave('categories')->
-      get();
+        return \App\Transaction::with('categories')
+        ->with('account')
+        ->where('date', '>', $startDate->toDateString())
+        ->where('date', '<', $endDate->toDateString())
+        ->where('type', 'payment')
+        ->where('value', '>', 0)
+        ->orderBy('date')
+        ->orderBy('value')
+        ->doesntHave('categories')
+        ->get();
     }
 }

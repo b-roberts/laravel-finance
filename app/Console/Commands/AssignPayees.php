@@ -37,18 +37,16 @@ class AssignPayees extends Command
      */
     public function handle()
     {
-      $transactions = \App\Transaction::whereNull('payee_id')->get();
+        $transactions = \App\Transaction::whereNull('payee_id')->get();
   //    dd($transactions);
-      $payees=\App\Payee::get();
-      foreach($transactions as $transaction)
-      {
-        foreach($payees as $payee){
-          if (preg_match('/'.$payee->regex.'/', $transaction->location)) {
-            $transaction->payee_id = $payee->id;
-            $transaction->save();
-          }
+        $payees=\App\Payee::get();
+        foreach ($transactions as $transaction) {
+            foreach ($payees as $payee) {
+                if (preg_match('/'.$payee->regex.'/', $transaction->location)) {
+                    $transaction->payee_id = $payee->id;
+                    $transaction->save();
+                }
+            }
         }
-
-      }
     }
 }

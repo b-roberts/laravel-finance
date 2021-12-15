@@ -9,11 +9,11 @@ class CategoryController extends Controller
 {
     public function index()
     {
-      $categories = \App\Category::orderBy('designation_id')->orderBy('name')->get();
+        $categories = \App\Category::orderBy('designation_id')->orderBy('name')->get();
 
-      return view('pages.categories.index',[
+        return view('pages.categories.index', [
         'categories'=>$categories
-      ]);
+        ]);
     }
 
     public function show($id)

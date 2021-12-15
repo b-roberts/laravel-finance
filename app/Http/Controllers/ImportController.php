@@ -10,7 +10,6 @@ use App\Parsers\AmCommParser;
 use App\Parsers\OfxParser;
 use App\Parsers\QfxParser;
 
-
 class ImportController extends Controller
 {
     public function index()
@@ -40,10 +39,10 @@ class ImportController extends Controller
             case 'csv':
             case 'CSV':
                 $parser = new AmCommParser;
-            break;
+                break;
             case 'qbo':
                 $parser = new QboParser;
-            break;
+                break;
             case 'ofx':
             case 'OFX':
                 $parser = new OfxParser;
@@ -56,7 +55,7 @@ class ImportController extends Controller
             case 'TXT':
             case 'txt':
                 include 'import/amcomm_statement.php';
-            break;
+                break;
         }
 
         $transactions = $parser->import($statementFile->getPathname(), 1);
@@ -69,7 +68,7 @@ class ImportController extends Controller
 
         $importCount = 0;
         foreach ($transactions as $transaction) {
-            if ( $transaction->fitid == null || 0 == Transaction::where('fitid', $transaction->fitid)->count()) {
+            if ($transaction->fitid == null || 0 == Transaction::where('fitid', $transaction->fitid)->count()) {
                 $transaction->account_id = $accountID;
                 $transaction->created_at = $timestamp;
 
@@ -81,9 +80,10 @@ class ImportController extends Controller
                 }
             }
         }
-        foreach($parser->dailyBalances as $date=>$balance)
-        if (0 == \DB::table('account_balance')->where(['account_id' => $accountID, 'date' => $date])->count()) {
-            \DB::table('account_balance')->insert(['account_id' => $accountID, 'date' => $date, 'value' => $balance * -1]);
+        foreach ($parser->dailyBalances as $date => $balance) {
+            if (0 == \DB::table('account_balance')->where(['account_id' => $accountID, 'date' => $date])->count()) {
+                \DB::table('account_balance')->insert(['account_id' => $accountID, 'date' => $date, 'value' => $balance * -1]);
+            }
         }
 
         $existingCount = sizeof($transactions) - $importCount;

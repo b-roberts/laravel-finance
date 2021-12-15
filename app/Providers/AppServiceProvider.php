@@ -11,13 +11,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-      \View::composer(
-    'charts.categoryBreakdown', 'App\Http\ViewComposers\CategoryBreakdownChartComposer'
-);
-\View::composer(
-  'charts.account_chart',
-  'App\Http\ViewComposers\AccountChart'
-);
+        \View::composer(
+            'charts.categoryBreakdown',
+            'App\Http\ViewComposers\CategoryBreakdownChartComposer'
+        );
+        \View::composer(
+            'charts.account_chart',
+            'App\Http\ViewComposers\AccountChart'
+        );
     }
 
     /**

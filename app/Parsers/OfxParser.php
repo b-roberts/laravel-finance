@@ -44,7 +44,7 @@ class OfxParser
             $location = '';
             if ($xpath->query('MEMO', $entry)->length > 0) {
                 $location = ($xpath->query('MEMO', $entry)[0]->nodeValue);
-            } 
+            }
             if ($location == '') {
                 $location = ($xpath->query('NAME', $entry)[0]->nodeValue);
             }

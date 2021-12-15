@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
 {
-   use SoftDeletes;
+    use SoftDeletes;
     /**
      * The database table used by the model.
      *
@@ -48,32 +48,34 @@ class Transaction extends Model
     }
     public function getAllocationTypeAttribute()
     {
-      switch($this->attributes['allocation_type'])
-      {
-        case '0':return 'manual';
-        case '1':return 'regex';
-        case '2':return 'Learned';
-      }
+        switch ($this->attributes['allocation_type']) {
+            case '0':
+                return 'manual';
+            case '1':
+                return 'regex';
+            case '2':
+                return 'Learned';
+        }
     }
 
     public function getIconAttribute()
     {
-      if ($this->type=='transfer')
-      {
-        return 'fa-random text-success';
-      }
-      if ($this->value < 0) {
-        return 'fa-hand-holding-usd text-success';
-      }
-      if ($this->categories->count()==0)
-      {
-        return 'fa-question text-danger';
-      }
-      switch($this->attributes['allocation_type'])
-      {
-        case '0':return 'fa-user';
-        case '1':return 'fa-shapes text-warning';
-        case '2':return 'fa-magic';
-      }
+        if ($this->type=='transfer') {
+            return 'fa-random text-success';
+        }
+        if ($this->value < 0) {
+            return 'fa-hand-holding-usd text-success';
+        }
+        if ($this->categories->count()==0) {
+            return 'fa-question text-danger';
+        }
+        switch ($this->attributes['allocation_type']) {
+            case '0':
+                return 'fa-user';
+            case '1':
+                return 'fa-shapes text-warning';
+            case '2':
+                return 'fa-magic';
+        }
     }
 }

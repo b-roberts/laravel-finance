@@ -22,7 +22,7 @@ class QfxParser
         $parser = new SgmlParser();
         $timestamp = date('Y-m-d H:i:s');
 
-$raw = preg_replace('/<INTU\.[A-Z]+>[0-9]*/', '', file_get_contents($file));
+        $raw = preg_replace('/<INTU\.[A-Z]+>[0-9]*/', '', file_get_contents($file));
     
         $doc = $parser->loadFromString($raw);
         $xpath = new \DOMXPath($doc);

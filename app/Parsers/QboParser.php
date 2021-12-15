@@ -32,7 +32,6 @@ class QboParser
         $this->dailyBalances[$ledgerDate] = $ledgerBalance;
 
         foreach ($entries as $entry) {
-
             $dateNode = $xpath->query('DTUSER', $entry)[0];
             $timeFormat = 'YmdHis.u';
             if (!$dateNode) {
@@ -44,8 +43,7 @@ class QboParser
             $value = -1 * $xpath->query('TRNAMT', $entry)[0]->nodeValue;
 
             $locationNode = $xpath->query('NAME', $entry)[0];
-            if (!$locationNode)
-            {
+            if (!$locationNode) {
                 $locationNode = $xpath->query('MEMO', $entry)[0];
             }
 
@@ -54,12 +52,12 @@ class QboParser
 
             $transaction = new Transaction();
             $transaction->forceFill([
-				'date' => $date,
-				'location' => $location,
-				'value' => $value,
-				'fitid' => $fitid,
-				'created_at' => $timestamp,
-			]);
+                'date' => $date,
+                'location' => $location,
+                'value' => $value,
+                'fitid' => $fitid,
+                'created_at' => $timestamp,
+            ]);
             $this->transactions->push($transaction);
         }
         return $this->transactions;

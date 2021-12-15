@@ -38,13 +38,13 @@ class CategorySpending extends BaseChart
         });
 
         $this
-      ->title('Monthly Cashflow')
-      ->dimensions(1250, 500)
-      ->responsive(false)
-      ->dataset('actual', $expenses->values()->all())
-      ->dataset('Average (3mo.)', $this->movingAverage($expenses->values()->all()),3)
-      ->colors(['#FBE1C8', '#C7D5E3'])
-      ->labels($transactionsByMonth->keys())
-    ;
+        ->title('Monthly Cashflow')
+        ->dimensions(1250, 500)
+        ->responsive(false)
+        ->dataset('actual', $expenses->values()->all())
+        ->dataset('Average (3mo.)', $this->movingAverage($expenses->values()->all()), 3)
+        ->colors(['#FBE1C8', '#C7D5E3'])
+        ->labels($transactionsByMonth->keys())
+        ;
     }
 }

@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use Charts;
 use \App\Repositories\TransactionRepository;
 
-
 class CashflowController extends Controller
 {
     public function cashflow()
     {
-      abort('501', 'Charts Not Implemented');
+        abort('501', 'Charts Not Implemented');
         //Load all transactions and group them by month
         $transactions =TransactionRepository::payments();
 

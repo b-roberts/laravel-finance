@@ -17,11 +17,11 @@ class PayeeController extends Controller
         //
         $payees = \App\Payee::orderBy('name')
         ->withCount('transactions')
-        ->withCount(['transactions as totalSpend' => function($query) {
+        ->withCount(['transactions as totalSpend' => function ($query) {
             $query->select(\DB::raw('sum(value)'));
         }])
         ->get();
-        return view('pages.payees.index',['payees'=>$payees]);
+        return view('pages.payees.index', ['payees'=>$payees]);
     }
 
     /**
@@ -61,7 +61,7 @@ class PayeeController extends Controller
     public function show(Payee $payee)
     {
         //
-        return view('pages.payees.edit',['payee'=>$payee]);
+        return view('pages.payees.edit', ['payee'=>$payee]);
     }
 
     /**
@@ -73,7 +73,7 @@ class PayeeController extends Controller
     public function edit(Payee $payee)
     {
         //
-        return view('pages.payees.edit',['payee'=>$payee]);
+        return view('pages.payees.edit', ['payee'=>$payee]);
     }
 
     /**

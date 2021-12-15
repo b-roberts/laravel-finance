@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Charts;
+
 use Phpml\Regression\LeastSquares;
 
 class Forecast extends BaseChart
@@ -15,50 +16,49 @@ class Forecast extends BaseChart
 
 
 
-        $nonExceptionalTransactionsByMonth = $transactions->filter(function($item){
-          return !$item->exceptional;
+        $nonExceptionalTransactionsByMonth = $transactions->filter(function ($item) {
+            return !$item->exceptional;
         })->groupBy(function ($item, $key) {
             return date('m-y', strtotime($item['date']));
         })->map(function ($chunk) {
             return $chunk->where('value', '>', 0)->sum('value');
         })->values()->all();
-array_pop($nonExceptionalTransactionsByMonth);
+        array_pop($nonExceptionalTransactionsByMonth);
 
 
 
-$x = array_map( function($element)
-{
-  return [$element];
-},array_keys($nonExceptionalTransactionsByMonth));
-$y = $nonExceptionalTransactionsByMonth;
+        $x = array_map(function ($element) {
+            return [$element];
+        }, array_keys($nonExceptionalTransactionsByMonth));
+        $y = $nonExceptionalTransactionsByMonth;
 
 
-$regression = new LeastSquares();
-$regression->train($x, $y);
+        $regression = new LeastSquares();
+        $regression->train($x, $y);
 
-$count = sizeof($nonExceptionalTransactionsByMonth);
+        $count = sizeof($nonExceptionalTransactionsByMonth);
 
-$forecast = array_fill(0,$count-1,null);
-$forecast[]=$y[$count-1];
+        $forecast = array_fill(0, $count-1, null);
+        $forecast[]=$y[$count-1];
 
-for ($i=$count;$i<$count+6; $i++) {
-  $y[] = null;
-  $forecast[] = $regression->predict([$i]);
-}
+        for ($i=$count; $i<$count+6; $i++) {
+            $y[] = null;
+            $forecast[] = $regression->predict([$i]);
+        }
 
 
-echo $regression->predict([7]);
-$expenses=$y;
+        echo $regression->predict([7]);
+        $expenses=$y;
 
 
         $this
-  ->title('Forecast')
-  ->dimensions(1250, 750)
-  ->responsive(false)
-  ->dataset('Expense', $expenses)
-  ->dataset('$forecast', $forecast)
-  ->colors(['#FBE1C8', '#C7D5E3', '#CC444B', '#4CB963'])
-  ->labels(array_keys($expenses))
-;
+        ->title('Forecast')
+        ->dimensions(1250, 750)
+        ->responsive(false)
+        ->dataset('Expense', $expenses)
+        ->dataset('$forecast', $forecast)
+        ->colors(['#FBE1C8', '#C7D5E3', '#CC444B', '#4CB963'])
+        ->labels(array_keys($expenses))
+        ;
     }
 }

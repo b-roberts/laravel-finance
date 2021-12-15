@@ -11,8 +11,8 @@ class NetIncome extends BaseChart
         $transactionsByMonth = $transactions->groupBy(function ($item, $key) {
             return date('m-y', strtotime($item['date']));
         });
-        $nonExceptionalTransactionsByMonth = $transactions->filter(function($item){
-          return !$item->exceptional;
+        $nonExceptionalTransactionsByMonth = $transactions->filter(function ($item) {
+            return !$item->exceptional;
         })->groupBy(function ($item, $key) {
             return date('m-y', strtotime($item['date']));
         });
@@ -32,9 +32,9 @@ class NetIncome extends BaseChart
                       ->dimensions(1250, 500)
                       ->responsive(false)
                       ->dataset('Net Income', $netData)
-                      ->dataset('Average (3mo)', $this->movingAverage($netData2,3))
-                      ->dataset('Average (6mo)', $this->movingAverage($netData2,6))
-                      ->dataset('Average (12mo)', $this->movingAverage($netData2,12))
+                      ->dataset('Average (3mo)', $this->movingAverage($netData2, 3))
+                      ->dataset('Average (6mo)', $this->movingAverage($netData2, 6))
+                      ->dataset('Average (12mo)', $this->movingAverage($netData2, 12))
                       ->colors(['#FBE1C8', '#CC444B','#444BCC','#44CC4B'])
                       ->labels($transactionsByMonth->keys())
                     ;

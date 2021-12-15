@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use \App\Account;
+
 class AccountController extends Controller
 {
     /**
@@ -13,8 +14,8 @@ class AccountController extends Controller
      */
     public function index()
     {
-      $accounts = Account::orderBy('name')->get();
-      return view('pages.accounts.index',['accounts'=>$accounts]);
+        $accounts = Account::orderBy('name')->get();
+        return view('pages.accounts.index', ['accounts'=>$accounts]);
     }
 
     /**
@@ -24,7 +25,7 @@ class AccountController extends Controller
      */
     public function create()
     {
-      return view('pages.accounts.create');
+        return view('pages.accounts.create');
     }
 
     /**
@@ -36,15 +37,15 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-      $this->validate($request,[
+        $this->validate($request, [
         'name' => 'required|max:24',
         'description' => 'required',
-      ]);
-      $account = new Account;
-      $account->fill($request->input());
-      $account->account_number = rand(1, 30000);
-      $account->save();
-      return back();
+        ]);
+        $account = new Account;
+        $account->fill($request->input());
+        $account->account_number = rand(1, 30000);
+        $account->save();
+        return back();
     }
 
     /**
@@ -58,7 +59,7 @@ class AccountController extends Controller
     {
         $account = Account::find($id);
         $accountGraph = new \App\Charts\Account($id);
-        return view('pages.accounts.show',['account'=>$account,'accountGraph'=>$accountGraph]);
+        return view('pages.accounts.show', ['account'=>$account,'accountGraph'=>$accountGraph]);
     }
 
     /**
@@ -70,8 +71,8 @@ class AccountController extends Controller
      */
     public function edit($id)
     {
-      $account = Account::find($id);
-      return view('pages.accounts.edit',['account'=>$account]);
+        $account = Account::find($id);
+        return view('pages.accounts.edit', ['account'=>$account]);
     }
 
     /**
@@ -85,16 +86,16 @@ class AccountController extends Controller
     public function update(Request $request, $id)
     {
 
-      $account = Account::find($id);
+        $account = Account::find($id);
 
-      $this->validate($request,[
+        $this->validate($request, [
         'name' => 'required|max:24',
         'description' => 'required',
-      ]);
+        ]);
 
-      $account->fill($request->input());
-      $account->save();
-      return back();
+        $account->fill($request->input());
+        $account->save();
+        return back();
     }
 
     /**

@@ -6,6 +6,7 @@ use Illuminate\View\View;
 use App\Repositories\UserRepository;
 use \Carbon\Carbon;
 use Charts;
+
 class CategoryBreakdownChartComposer
 {
 
@@ -19,9 +20,9 @@ class CategoryBreakdownChartComposer
     {
         $parameters = collect(request()->route()->parameters())->union(request()->input());
 
-        $startDate=$parameters->get('startDate',null);
+        $startDate=$parameters->get('startDate', null);
 
-$endDate = (new  Carbon($startDate))->addMonth();
+        $endDate = (new  Carbon($startDate))->addMonth();
             $startDate = new  Carbon($startDate);
 
 
@@ -35,9 +36,8 @@ $endDate = (new  Carbon($startDate))->addMonth();
                 $y->expected = $y->budgets->first()->pivot->value;
             }
         });
-        $categories->map(function ($y) use ($startDate,$endDate) {
+        $categories->map(function ($y) use ($startDate, $endDate) {
             $y->actual = $y->transactions()->where('date', '>', $startDate->toDateString())->where('date', '<', $endDate->toDateString())->sum('transaction_detail.value');
-
         });
 
         $categoryBreakdown = Charts::create('pie', 'google')
@@ -49,7 +49,7 @@ $endDate = (new  Carbon($startDate))->addMonth();
             return $c->actual;// > 0 ? $c->actual : 0;
         }))
         ->labels($categories->pluck('name')->values())
-      ;
-      return  $view->with('categoryBreakdown', $categoryBreakdown);
+        ;
+        return  $view->with('categoryBreakdown', $categoryBreakdown);
     }
 }

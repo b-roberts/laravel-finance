@@ -30,5 +30,4 @@ class Account extends Model
         }
         return $balance->value;
     }
-
 }

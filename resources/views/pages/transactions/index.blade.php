@@ -56,8 +56,8 @@
 
 <!-- Default dropleft button -->
 <div class=" dropleft">
-  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    ...
+  <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    &nbsp;
   </button>
   <div class="dropdown-menu">
     <a class="dropdown-item" onclick="viewLocation('@{{location}}')">See All @{{location}}</a>
@@ -66,7 +66,6 @@
 <a class="dropdown-item" href="#">Delete</a>
   </div>
 </div>
-<input type="checkbox" data-transaction-check="@{{id}}" value="@{{id}}"/>
 </div>
 </div>
 </script>

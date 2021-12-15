@@ -6,7 +6,11 @@
     <td>
     </td>
     @for($i=0; $i < 12; $i++)
-    <td>{{ $startDate->copy()->addMonth($i)->format('M Y')}}</td>
+    <td>
+      <a href="{{route('income-statement',[$startDate->copy()->addMonth($i)->format('Y-m-d')])}}">
+        {{ $startDate->copy()->addMonth($i)->format('M Y')}}
+      </a>
+    </td>
     @endfor
     </tr>
   @foreach($accounts as $account)

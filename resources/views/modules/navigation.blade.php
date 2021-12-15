@@ -18,6 +18,9 @@
         <a class="nav-link" href="{{route('income-statement')}}">Income Statement</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="{{route('balance')}}">Balance Sheet</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="{{route('rule.index')}}">Rules</a>
       </li>
       <li class="nav-item">

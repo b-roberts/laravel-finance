@@ -26,6 +26,7 @@ Route::resource('payee', 'PayeeController');
 
 Route::get('transactions/{startDate?}', 'AccountingPeriodController@index')->name('period');
 Route::get('income-statement/{startDate?}', 'IncomeStatementController@index')->name('income-statement');
+Route::get('balance/{startDate?}', 'IncomeStatementController@balance')->name('balance');
 Route::get('cashflow', 'CashflowController@cashflow')->name('cashflow');
 
 Route::get('payee/{payee}','TransactionController@payee')->name('payee');

@@ -85,4 +85,76 @@ class IncomeStatementController extends Controller
           'charts' => $categoryCharts,
         ]);
     }
+
+    public function balance($startDate, $endDate = null)
+    {
+        \DB::connection()->getPdo()->query('SET SQL_MODE=""');
+        $startDate = new  Carbon($startDate);
+        $startDate->day=1;
+        if (null == $endDate) {
+            $endDate = (new  Carbon($startDate))->addYear();
+        } else {
+            $endDate = new Carbon($endDate);
+        }
+        $designations = \App\Designation::all();
+        $accounts = \App\Account::all();
+$expenses = collect();
+$incomes = collect();
+for($i=0; $i < 12; $i++)
+{
+    //$months[$i] = collect();
+   // $months[$i]['start'] = $periodStart;
+    $periodStart = $startDate->copy()->addMonth($i);
+    $periodEnd = $periodStart->copy()->addMonth();
+    $expenses[$i] = collect();
+    //Load all transactions in the period
+    $incomes[$i] = \App\Transaction::with('categories')
+        
+        ->where('date', '>=', $periodStart->toDateString())
+        ->where('date', '<', $periodEnd->toDateString())
+        ->where('value', '<', 0)
+        ->where('type', 'payment')
+        ->groupBy('account_id')
+        ->selectRaw('account_id, sum(value) total')
+        ->pluck('total', 'account_id');
+        
+        foreach ($designations as $designation) {
+            $expenses[$i][$designation->id] = $designation->categories()
+            ->with(['transactions' => function ($query) use ($periodStart,$periodEnd) {
+                    $query->where('date', '>', $periodStart->toDateString())
+                        ->where('date', '<', $periodEnd->toDateString());
+                }])->get()->map(function ($y) {
+                    $expenseTransactions = $y->transactions
+                        ->filter(function ($item, $key) {
+                            return $item->value > 0;
+                        });
+                return $expenseTransactions->sum('pivot.value');
+            })->sum();
+        }
+
+        $expenses[$i][99] = \App\Transaction::with('categories')
+            ->with('account')
+            ->where('date', '>=', $periodStart->toDateString())
+            ->where('date', '<=', $periodEnd->toDateString())
+            ->where('type', 'payment')
+            ->where('value','>',0)
+            ->orderBy('date')
+            ->orderBy('value')
+            ->doesntHave('categories')
+            ->sum('value');
+
+}
+return view('pages.balance', [
+    'startDate' => $startDate,
+    'designations' => $designations,
+    'accounts' => $accounts,
+    'expenses' => $expenses,
+    'incomes' => $incomes
+  ]);
+
+
+        
+
+dd($months);
+    }
 }

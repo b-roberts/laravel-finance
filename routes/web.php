@@ -30,7 +30,6 @@ Route::get('income-statement/{startDate?}', 'IncomeStatementController@index')->
 Route::get('balance/{startDate?}', 'IncomeStatementController@balance')->name('balance');
 Route::get('cashflow', 'CashflowController@cashflow')->name('cashflow');
 
-Route::get('payee/{payee}','TransactionController@payee')->name('payee');
 Route::get('search/{payee}','TransactionController@search')->name('payee');
 
 Route::get('settings',function(){return view('pages.settings');})->name('settings');

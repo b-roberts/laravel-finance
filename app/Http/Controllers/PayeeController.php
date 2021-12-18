@@ -61,7 +61,11 @@ class PayeeController extends Controller
     public function show(Payee $payee)
     {
         //
-        return view('pages.payees.edit', ['payee'=>$payee]);
+        $stats = [
+            'mode' => \App\Repositories\TransactionRepository::make()->madeTo($payee)->mode('value'),
+            'average' => \App\Repositories\TransactionRepository::make()->madeTo($payee)->avg('value'),
+        ];
+        return view('pages.payees.show', ['payee'=>$payee, 'stats' => $stats]);
     }
 
     /**
